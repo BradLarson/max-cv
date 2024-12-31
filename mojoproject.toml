@@ -1,0 +1,14 @@
+[project]
+authors = ["Brad Larson <larson@sunsetlakesoftware.com>"]
+channels = ["conda-forge", "https://conda.modular.com/max-nightly"]
+description = "MAX-CV: Accelerated image processing via MAX and Mojo"
+name = "max-cv"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+filter-single-image = { cmd="mojo package operations/ -o operations.mojopkg && python examples/filter_single_image.py", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+
+[dependencies]
+max = ">=25.1.0.dev2024122405,<26"
+pillow = ">=11.0.0,<12"
