@@ -4,6 +4,7 @@ from max.dtype import DType
 from max.graph import ops, TensorValue
 from pathlib import Path
 from PIL import Image
+from .operations import luminance_to_rgb
 """Common I/O functionality for loading, saving, and processing images."""
 
 
@@ -41,15 +42,27 @@ def normalize_image(image: TensorValue, dtype: DType) -> TensorValue:
     return ops.cast(image, dtype) / 255.0
 
 
-def restore_image(tensor: TensorValue) -> TensorValue:
+def restore_image(tensor: TensorValue, clamp: bool = True) -> TensorValue:
     """After all the actions of the image pipeline have completed, restores
-    the image to a 0-255 colorspace and places it back in a UInt8 format.
+    the image to a 0-255 colorspace and places it back in a UInt8 format. If
+    the inbound image is luminance-only, it is converted back to RGB
+    colorspace.
     
     Args:
         tensor: A value representing the end result of the image pipeline.
+        clamp: Whether to clamp the incoming color channels to a 0.0 - 1.0
+        range before converting to UInt8.
 
     Returns:
         A graph value representing a UInt8 image tensor with color channels in
         the 0-255 range.
     """
-    return ops.cast(tensor * 255.0, dtype=DType.uint8)
+    if clamp:
+        input = ops.max(ops.min(tensor, 1.0), 0.0)
+    else:
+        input = tensor
+
+    if input.shape[-1] == 1:
+        input = luminance_to_rgb(input)
+
+    return ops.cast(input * 255.0, dtype=DType.uint8)

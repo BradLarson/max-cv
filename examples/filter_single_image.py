@@ -5,7 +5,6 @@ from PIL import Image
 import sys
 path_root = Path(__file__).parent.parent
 sys.path.append(str(path_root))
-print(sys.path)
 
 from max_cv import ImagePipeline, load_image_into_tensor
 from max_cv import operations as ops
@@ -22,14 +21,15 @@ if __name__ == "__main__":
     image_tensor = load_image_into_tensor(image_path, device)
 
     # Configure the image processing pipeline.
-    filter_value = 1.5
+    filter_value = 0.5
 
     with ImagePipeline(
         "filter_single_image",
         image_tensor.shape,
         pipeline_dtype=DType.float32
     ) as pipeline:
-        processed_image = ops.gamma(pipeline.input_image, filter_value)
+        # processed_image = ops.brightness(pipeline.input_image, filter_value)
+        processed_image = ops.rgb_to_luminance(pipeline.input_image)
         pipeline.output(processed_image)
 
     print("Graph:", pipeline._graph)

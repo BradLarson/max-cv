@@ -43,3 +43,32 @@ struct Gamma:
             return _pow(image.load[width](idx), gamma)
 
         foreach[func, synchronous, target](out, ctx)
+
+@compiler.register("luminance", num_dps_outputs=1)
+struct Luminance:
+    """Reduce an RGB image to its luminance channel."""
+    @staticmethod
+    fn execute[
+        synchronous: Bool,
+        target: StringLiteral,
+    ](
+        out: ManagedTensorSlice,
+        image: ManagedTensorSlice[out.type, out.rank],
+        ctx: MojoCallContextPtr,
+    ):
+        @parameter
+        @always_inline
+        fn func[width: Int](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
+            var color_idx = idx
+            color_idx[image.rank - 1] = 0
+            var red = image.load[1](color_idx)
+            color_idx[image.rank - 1] = 1
+            var green = image.load[1](color_idx)
+            color_idx[image.rank - 1] = 2
+            var blue = image.load[1](color_idx)
+            # Values from "Graphics Shaders: Theory and Practice" by Bailey
+            # and Cunningham.
+            var luminance = red * 0.2125  + green * 0.7154 + blue * 0.0721
+            return SIMD[image.type, width](luminance)
+
+        foreach[func, synchronous, target](out, ctx)
