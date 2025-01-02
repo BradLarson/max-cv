@@ -12,7 +12,7 @@ def assert_rgb(image: TensorValue):
         ValueError: if the input image does not have 3 color channels.
     """
     channels = image.shape.static_dims[-1]
-    if channels is not 3:
+    if channels != 3:
         raise ValueError(f"expected an RGB image, instead has only {channels} channel(s)")
 
 def assert_luminance(image: TensorValue):
@@ -25,5 +25,5 @@ def assert_luminance(image: TensorValue):
         ValueError: if the input image does not have one luminance channel.
     """
     channels = image.shape.static_dims[-1]
-    if channels is not 1:
+    if channels != 1:
         raise ValueError(f"expected a luminance-only image, instead has {channels} channels")
