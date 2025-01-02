@@ -146,3 +146,9 @@ present. Here are the ones that are currently functional:
   result is a single-channel image, usable directly by anything that expects a
   luminance-only input. For operations expecting an RGB input, you'll need to
   use `luminance_to_rgb()` to convert the image back to a three-channel one.
+
+### Image processing ###
+
+- **sobel_edge_detection**: Sobel edge detection, with edges highlighted in white.
+  - *strength*: Adjusts the dynamic range of the filter. Higher values lead to
+  stronger edges, but can saturate the intensity colorspace. Default is 1.0.
