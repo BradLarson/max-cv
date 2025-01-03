@@ -3,7 +3,7 @@ authors = ["Brad Larson <larson@sunsetlakesoftware.com>"]
 channels = ["conda-forge", "https://conda.modular.com/max-nightly"]
 description = "MAX-CV: Accelerated image processing via MAX and Mojo"
 name = "max-cv"
-platforms = ["osx-arm64"]
+platforms = ["osx-arm64", "linux-aarch64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
