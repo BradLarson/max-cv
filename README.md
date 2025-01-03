@@ -129,6 +129,15 @@ directory:
 magic run filter-single-image
 ```
 
+## Tests ##
+
+The set of unit and integration tests for the library can be run using the
+following invocation:
+
+```sh
+magic run test
+```
+
 ## Built-in operations ##
 
 Operations are currently being added, with only a small set available at

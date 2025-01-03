@@ -30,7 +30,7 @@ if __name__ == "__main__":
     ) as pipeline:
         # processed_image = ops.brightness(pipeline.input_image, filter_value)
         processed_image = ops.rgb_to_luminance(pipeline.input_image)
-        processed_image = ops.sobel_edge_detection(processed_image)
+        processed_image = ops.sobel_edge_detection(processed_image, strength=1.0)
         pipeline.output(processed_image)
 
     print("Graph:", pipeline._graph)

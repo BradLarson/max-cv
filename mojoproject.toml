@@ -9,6 +9,16 @@ version = "0.1.0"
 [tasks]
 filter-single-image = { cmd="mojo package operations/ -o operations.mojopkg && python examples/filter_single_image.py", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
 
+[feature.test.tasks]
+test = { cmd="mojo package operations/ -o operations.mojopkg && pytest", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+
+[feature.test.dependencies]
+pytest = ">=8.3.2, <9"
+
 [dependencies]
 max = ">=25.1.0.dev2024122405,<26"
 pillow = ">=11.0.0,<12"
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
