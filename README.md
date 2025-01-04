@@ -161,3 +161,8 @@ present. Here are the ones that are currently functional:
 - **sobel_edge_detection**: Sobel edge detection, with edges highlighted in white.
   - *strength*: Adjusts the dynamic range of the filter. Higher values lead to
   stronger edges, but can saturate the intensity colorspace. Default is 1.0.
+
+### Visual effects ###
+
+- **pixellate**: Applies a pixellation effect on an image.
+  - *pixel_width*: How large the square pixels will be in the final image.
