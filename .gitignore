@@ -5,5 +5,8 @@
 # magic environments
 .magic
 *.mojopkg
+# Python and notebook temporary files
 __pycache__
+.ipynb_checkpoints/
+# Output from examples
 output.png

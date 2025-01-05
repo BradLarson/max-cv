@@ -15,6 +15,13 @@ test = { cmd="mojo package operations/ -o operations.mojopkg && pytest", env={ M
 [feature.test.dependencies]
 pytest = ">=8.3.2, <9"
 
+[feature.notebook.tasks]
+notebook = { cmd="mojo package operations/ -o operations.mojopkg && cp operations.mojopkg examples/ && jupyter notebook", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+
+[feature.notebook.dependencies]
+matplotlib = ">=3.9.0,<4"
+notebook = ">=7.3.2,<8"
+
 [dependencies]
 max = ">=25.1.0.dev2024122405,<26"
 pillow = ">=11.0.0,<12"
@@ -22,3 +29,4 @@ pillow = ">=11.0.0,<12"
 [environments]
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
+notebook = { features = ["notebook"], solve-group = "default" }

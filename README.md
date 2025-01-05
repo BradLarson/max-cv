@@ -117,6 +117,18 @@ im = Image.fromarray(result_array)
 im.save("output.png")
 ```
 
+## Notebook ##
+
+A Jupyter notebook environment is provided that can be used for
+experimentation with image processing and MAX. To activate it, run:
+
+```sh
+magic run notebook
+```
+
+A [sample notebook](examples/filter_single_image.ipynb) has been provided to
+showcase how to use the library.
+
 ## Examples ##
 
 Currently, a single example is provided to demonstrate how to run an image
