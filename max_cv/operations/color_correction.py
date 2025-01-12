@@ -53,6 +53,23 @@ def gamma(image: TensorValue, gamma: float) -> TensorValue:
     # The simple way.
     # return ops.pow(image, gamma)
 
+def luminance_threshold(image: TensorValue, threshold: float) -> TensorValue:
+    """Sets a pixel to black if below this luminance threshold, white
+    otherwise.
+
+    Args:
+        image: A value representing an incoming image in a graph.
+        threshold: The luminance value to test against.
+
+    Returns:
+        A value representing the corrected image.
+    """
+    assert_luminance(image)
+    return ops.cast(
+        ops.greater(image, ops.constant(threshold, dtype=image.dtype)),
+        image.dtype
+    )
+
 def rgb_to_luminance(image: TensorValue) -> TensorValue:
     """Reduces an RGB image to only its luminance channel.
 

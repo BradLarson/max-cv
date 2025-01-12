@@ -37,8 +37,9 @@ class ImagePipeline:
         return self
 
     def __exit__(self, *exc):
-        restored_image = restore_image(self.output_image)
-        self._graph.output(restored_image)
+        if hasattr(self, "output_image"):
+            restored_image = restore_image(self.output_image)
+            self._graph.output(restored_image)
         self._graph.__exit__(*exc)
 
     def output(self, image: TensorValue):

@@ -45,6 +45,22 @@ def gamma(value):
     print("Adjusting gamma by:", value)
     run_pipeline(operations=lambda input: ops.gamma(input, value))
 
+@showcase.command(name="luminance_threshold")
+@click.option(
+    "--threshold",
+    type=float,
+    default=0.5,
+    show_default=True,
+    help="Luminance threshold, from 0.0 - 1.0.",
+)
+def luminance_threshold(threshold):
+    print("Thresholding luminance at:", threshold)
+    def thresholding(input: TensorValue) -> TensorValue:
+        processed_image = ops.rgb_to_luminance(input)
+        return ops.luminance_threshold(processed_image, threshold=threshold)
+
+    run_pipeline(operations=thresholding)
+
 @showcase.command(name="rgb_to_luminance")
 def rgb_to_luminance():
     print("Reducing image to luminance channel.")

@@ -178,6 +178,10 @@ present. Here are the ones that are currently functional:
 - **gamma**: Adjusts the gamma of an image.
   - *gamma*: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
 
+- **luminance_threshold**: Sets a pixel to black if below a luminance
+  threshold, white otherwise.
+  - *threshold*: The threshold to test against, ranging from 0.0 - 1.0.
+
 - **rgb_to_luminance**: Reduces an image to its luminance (grayscale). The
   result is a single-channel image, usable directly by anything that expects a
   luminance-only input. For operations expecting an RGB input, you'll need to
