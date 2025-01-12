@@ -26,8 +26,8 @@ struct Pixellate:
             width: Int
         ](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             var pixel_idx = idx
-            pixel_idx[0] = (pixel_idx[0] // int(pixel_width)) * int(pixel_width)
-            pixel_idx[1] = (pixel_idx[1] // int(pixel_width)) * int(pixel_width)
+            pixel_idx[0] = (pixel_idx[0] // Int(pixel_width)) * Int(pixel_width)
+            pixel_idx[1] = (pixel_idx[1] // Int(pixel_width)) * Int(pixel_width)
             return image.load[width](pixel_idx)
 
         foreach[func, synchronous, target](out, ctx)

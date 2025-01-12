@@ -3,7 +3,6 @@ from max.dtype import DType
 from max.engine import InferenceSession
 from max.graph import Graph, TensorType
 import max_cv.operations as ops
-from pathlib import Path
 from .common import generate_test_tensor, run_graph
 
 def test_brightness(session: InferenceSession) -> None:

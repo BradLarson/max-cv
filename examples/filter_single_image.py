@@ -28,17 +28,15 @@ if __name__ == "__main__":
         image_tensor.shape,
         pipeline_dtype=DType.float32
     ) as pipeline:
-        # processed_image = ops.brightness(pipeline.input_image, filter_value)
-        # processed_image = ops.rgb_to_luminance(pipeline.input_image)
-        # processed_image = ops.sobel_edge_detection(processed_image, strength=1.0)
         processed_image = ops.pixellate(pipeline.input_image, pixel_width=20)
         pipeline.output(processed_image)
 
-    print("Graph:", pipeline._graph)
-
     # Compile and run the pipeline.
+    print("Compiling graph...")
     pipeline.compile(device)
+    print("Compilation finished. Running image pipeline...")
     result = pipeline(image_tensor)
+    print("Processing finished.")
 
     # Move the results to the host CPU and convert them to NumPy format.
     result = result.to(CPU())
