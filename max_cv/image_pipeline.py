@@ -28,7 +28,6 @@ class ImagePipeline:
                 TensorType(DType.uint8, shape=self._shape),
             ]
         )
-        print("H:", height, "W:", width, "C:", channels)
 
     def __enter__(self):
         self._graph = self._graph.__enter__()

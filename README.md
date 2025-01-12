@@ -131,14 +131,29 @@ showcase how to use the library.
 
 ## Examples ##
 
-Currently, a single example is provided to demonstrate how to run an image
-through a processing pipeline and obtain a resulting image. Assuming that you
-have installed the Magic command-line tool referenced above, building and
-running this example is as simple as calling the following in the current
+Two examples are provided, starting with a simple demonstration of how to run
+an image through a processing pipeline and obtain a resulting image. Assuming
+that you have installed the Magic command-line tool referenced above, building
+and running this example is as simple as calling the following in the current
 directory:
 
 ```sh
 magic run filter-single-image
+```
+
+A more advanced example acts as a showcase of all of the image operations in
+the library, with each operation as a subcommand of the main `showcase.py`
+example. To see all available image operations, run
+
+```sh
+magic run showcase
+```
+
+and as an example of how to execute a single operation and show the resulting
+image to the display:
+
+```sh
+magic run showcase pixellate --value 15
 ```
 
 ## Tests ##

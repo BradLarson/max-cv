@@ -22,6 +22,13 @@ notebook = { cmd="mojo package operations/ -o operations.mojopkg && cp operation
 matplotlib = ">=3.9.0,<4"
 notebook = ">=7.3.2,<8"
 
+[feature.showcase.tasks]
+showcase = { cmd="mojo package operations/ -o operations.mojopkg && python examples/showcase.py $0", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+
+[feature.showcase.dependencies]
+click = ">=8.1.7"
+matplotlib = ">=3.9.0,<4"
+
 [dependencies]
 max = ">=25.1.0.dev2024122405,<26"
 pillow = ">=11.0.0,<12"
@@ -30,3 +37,4 @@ pillow = ">=11.0.0,<12"
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 notebook = { features = ["notebook"], solve-group = "default" }
+showcase = { features = ["showcase"], solve-group = "default" }
