@@ -1,6 +1,6 @@
 [project]
 authors = ["Brad Larson <larson@sunsetlakesoftware.com>"]
-channels = ["conda-forge", "https://conda.modular.com/max-nightly"]
+channels = ["conda-forge", "https://conda.modular.com/max/"]
 description = "MAX-CV: Accelerated image processing via MAX and Mojo"
 name = "max-cv"
 platforms = ["osx-arm64", "linux-aarch64", "linux-64"]
@@ -30,7 +30,7 @@ click = ">=8.1.7"
 matplotlib = ">=3.9.0,<4"
 
 [dependencies]
-max = ">=25.1.0.dev2024122405,<26"
+max = ">=24.6.0.dev2024090821"
 pillow = ">=11.0.0,<12"
 
 [environments]

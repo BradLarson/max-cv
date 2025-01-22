@@ -8,13 +8,13 @@ sys.path.append(str(path_root))
 
 from max_cv import ImagePipeline, load_image_into_tensor
 from max_cv import operations as ops
-from max.driver import Accelerator, accelerator_count, CPU
+from max.driver import accelerator_count, CPU, CUDA
 from max.dtype import DType
 
 
 if __name__ == "__main__":
     # Place the graph on a GPU, if available. Fall back to CPU if not.
-    device = CPU() if accelerator_count() == 0 else Accelerator()
+    device = CPU() if accelerator_count() == 0 else CUDA()
 
     # Load our initial image into a device Tensor.
     image_path = Path("examples/resources/bucky_birthday_small.jpeg")
