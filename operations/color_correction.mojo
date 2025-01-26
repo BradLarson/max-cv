@@ -1,7 +1,7 @@
 import compiler
 from builtin.simd import _pow
 from utils.index import IndexList
-from tensor_utils import ManagedTensorSlice, foreach
+from max.tensor import ManagedTensorSlice, foreach
 from runtime.asyncrt import MojoCallContextPtr
 
 @compiler.register("brightness", num_dps_outputs=1)
@@ -9,7 +9,6 @@ struct Brightness:
     """Adjusts the brightness of an image."""
     @staticmethod
     fn execute[
-        synchronous: Bool,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice,
@@ -22,14 +21,13 @@ struct Brightness:
         fn func[width: Int](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             return image.load[width](idx) + brightness.cast[image.type]()
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)
 
 @compiler.register("gamma", num_dps_outputs=1)
 struct Gamma:
     """Adjusts the gamma of an image."""
     @staticmethod
     fn execute[
-        synchronous: Bool,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice,
@@ -42,14 +40,13 @@ struct Gamma:
         fn func[width: Int](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             return _pow(image.load[width](idx), gamma)
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)
 
 @compiler.register("luminance", num_dps_outputs=1)
 struct Luminance:
     """Reduce an RGB image to its luminance channel."""
     @staticmethod
     fn execute[
-        synchronous: Bool,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice,
@@ -71,4 +68,4 @@ struct Luminance:
             var luminance = red * 0.2125  + green * 0.7154 + blue * 0.0721
             return SIMD[image.type, width](luminance)
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)

@@ -2,7 +2,7 @@ import compiler
 from builtin.simd import _pow
 from math import sqrt
 from utils.index import Index, IndexList
-from tensor_utils import ManagedTensorSlice, foreach
+from max.tensor import ManagedTensorSlice, foreach
 from runtime.asyncrt import MojoCallContextPtr
 
 
@@ -12,7 +12,6 @@ struct Pixellate:
 
     @staticmethod
     fn execute[
-        synchronous: Bool,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice,
@@ -30,4 +29,4 @@ struct Pixellate:
             pixel_idx[1] = (pixel_idx[1] // Int(pixel_width)) * Int(pixel_width)
             return image.load[width](pixel_idx)
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)

@@ -1,6 +1,6 @@
 import compiler
 from utils.index import IndexList
-from tensor_utils import ManagedTensorSlice, foreach
+from max.tensor import ManagedTensorSlice, foreach
 from runtime.asyncrt import MojoCallContextPtr
 
 
@@ -8,8 +8,6 @@ from runtime.asyncrt import MojoCallContextPtr
 struct Passthrough:
     @staticmethod
     fn execute[
-        # Parameter that if true, runs kernel synchronously in runtime
-        synchronous: Bool,
         # e.g. "CUDA" or "CPU"
         target: StringLiteral,
     ](
@@ -25,7 +23,7 @@ struct Passthrough:
         fn func[width: Int](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             return image.load[width](idx)
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)
 
     # You only need to implement this if you do not manually annotate
     # output shapes in the graph.

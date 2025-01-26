@@ -2,7 +2,7 @@ import compiler
 from builtin.simd import _pow
 from math import sqrt
 from utils.index import IndexList
-from tensor_utils import ManagedTensorSlice, foreach
+from max.tensor import ManagedTensorSlice, foreach
 from runtime.asyncrt import MojoCallContextPtr
 
 
@@ -26,7 +26,6 @@ struct SobelEdgeDetection:
 
     @staticmethod
     fn execute[
-        synchronous: Bool,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice,
@@ -68,4 +67,4 @@ struct SobelEdgeDetection:
             var magnitude = sqrt(h * h + v * v)
             return magnitude * strength.cast[image.type]()
 
-        foreach[func, synchronous, target](out, ctx)
+        foreach[func, target=target](out, ctx)
