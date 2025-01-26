@@ -95,12 +95,45 @@ def sobel(value):
     show_default=True,
     help="Pixel width.",
 )
-def sobel(value):
+def pixellate(value):
     print("Pixellating image with pixel width:", value)
     run_pipeline(operations=lambda input: ops.pixellate(input, value))
 
+# Blends.
 
-def run_pipeline(operations: Callable):
+@showcase.command(name="add_blend")
+def add_blend():
+    print("Applying additive blend on two images.")
+    run_pipeline(
+        operations=lambda inputs: ops.add_blend(inputs[0], inputs[1]),
+        num_inputs=2
+    )
+
+@showcase.command(name="dissolve_blend")
+@click.option(
+    "--intensity",
+    type=float,
+    default=0.5,
+    show_default=True,
+    help="Blend strength.",
+)
+def dissolve_blend(intensity):
+    print("Applying dissolve blend on two images with intensity:", intensity)
+    run_pipeline(
+        operations=lambda inputs: ops.dissolve_blend(inputs[0], inputs[1], intensity),
+        num_inputs=2
+    )
+
+@showcase.command(name="multiply_blend")
+def add_blend():
+    print("Applying multiply blend on two images.")
+    run_pipeline(
+        operations=lambda inputs: ops.multiply_blend(inputs[0], inputs[1]),
+        num_inputs=2
+    )
+
+
+def run_pipeline(operations: Callable, num_inputs: int = 1):
     # Place the graph on a GPU, if available. Fall back to CPU if not.
     device = CPU() if accelerator_count() == 0 else Accelerator()
 
@@ -108,22 +141,32 @@ def run_pipeline(operations: Callable):
     image_path = Path("examples/resources/bucky_birthday_small.jpeg")
     image_tensor = load_image_into_tensor(image_path, device)
 
-    # Configure the image processing pipeline.
-    filter_value = 0.5
+    if num_inputs > 1:
+        # Load a foreground blend image for the cases that need a second image.
+        bg_image_path = Path("examples/resources/wisconsin_institutes_small.jpeg")
+        bg_image_tensor = load_image_into_tensor(bg_image_path, device)
 
+    # Configure the image processing pipeline.
     with ImagePipeline(
         "filter_single_image",
         image_tensor.shape,
-        pipeline_dtype=DType.float32
+        pipeline_dtype=DType.float32,
+        num_inputs=num_inputs
     ) as pipeline:
-        processed_image = operations(pipeline.input_image)
+        if num_inputs == 1:
+            processed_image = operations(pipeline.input_image)
+        else:
+            processed_image = operations(pipeline.input_images)
         pipeline.output(processed_image)
 
     # Compile and run the pipeline.
     print("Compiling graph...")
     pipeline.compile(device)
     print("Compilation finished. Running image pipeline...")
-    result = pipeline(image_tensor)
+    if num_inputs == 1:
+        result = pipeline(image_tensor)
+    else:
+        result = pipeline(image_tensor, bg_image_tensor)
     print("Processing finished.")
 
     # Move the results to the host CPU and convert them to NumPy format.

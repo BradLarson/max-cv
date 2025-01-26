@@ -35,7 +35,7 @@ struct SobelEdgeDetection:
     ):
         @parameter
         @always_inline
-        fn func[
+        fn sobel[
             width: Int
         ](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             var top_left = edge_clamped_offset_load[
@@ -67,4 +67,4 @@ struct SobelEdgeDetection:
             var magnitude = sqrt(h * h + v * v)
             return magnitude * strength.cast[image.type]()
 
-        foreach[func, target=target](out, ctx)
+        foreach[sobel, target=target](out, ctx)

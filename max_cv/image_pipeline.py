@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from max.driver import Device, Tensor
 from max.dtype import DType
 from max.engine import InferenceSession, Model
 from max.graph import Graph, Shape, TensorType, TensorValue
 from pathlib import Path
+from typing import List
 from .io import normalize_image, restore_image
 
 class ImagePipeline:
@@ -13,27 +13,34 @@ class ImagePipeline:
     _graph: Graph
     _model: Model
     input_image: TensorValue
+    input_images: List[TensorValue]
     output_image: TensorValue
 
-    def __init__(self, name: str, shape: Shape, pipeline_dtype: DType):
+    def __init__(
+        self,
+        name: str,
+        shape: Shape,
+        pipeline_dtype: DType,
+        num_inputs: int = 1
+    ):
         self.name = name
         self._shape = shape
         self._pipeline_dtype = pipeline_dtype
-        height = int(shape[0])
-        width = int(shape[1])
-        channels = int(shape[2])
+        input_types = [
+            TensorType(DType.uint8, shape=self._shape) for i in range(num_inputs)
+        ]
         self._graph = Graph(
             self.name,
-            input_types=[
-                TensorType(DType.uint8, shape=self._shape),
-            ]
+            input_types=input_types
         )
 
     def __enter__(self):
         self._graph = self._graph.__enter__()
-        image, *_ = self._graph.inputs
-        normalized_image = normalize_image(image, dtype=self._pipeline_dtype)
-        self.input_image = normalized_image
+        images = self._graph.inputs
+        self.input_images = [
+            normalize_image(image, dtype=self._pipeline_dtype) for image in images
+        ]
+        self.input_image = self.input_images[0]
         return self
 
     def __exit__(self, *exc):
@@ -57,6 +64,6 @@ class ImagePipeline:
 
         self._model = session.load(self._graph)
     
-    def __call__(self, image: Tensor) -> Tensor:
+    def __call__(self, *images: Tensor) -> Tensor:
         # TODO: Assert that the image tensor resides on the same device.
-        return self._model.execute(image)[0]
+        return self._model.execute(*images)[0]

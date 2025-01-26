@@ -20,7 +20,9 @@ struct Passthrough:
     ):
         @parameter
         @always_inline
-        fn func[width: Int](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
+        fn func[
+            width: Int
+        ](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             return image.load[width](idx)
 
         foreach[func, target=target](out, ctx)

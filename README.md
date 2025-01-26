@@ -197,3 +197,13 @@ present. Here are the ones that are currently functional:
 
 - **pixellate**: Applies a pixellation effect on an image.
   - *pixel_width*: How large the square pixels will be in the final image.
+
+### Blending ###
+
+- **add_blend**: Applies an additive blend of two images.
+
+- **dissolve_blend**: Applies a dissolve blend of two images.
+  - *intensity*: The degree with which the foreground image overrides the
+  background (0.0 - 1.0, with 0.5 as the default).
+
+- **multiply_blend**: Applies a multiply blend of two images.

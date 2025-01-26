@@ -21,7 +21,7 @@ struct Pixellate:
     ):
         @parameter
         @always_inline
-        fn func[
+        fn pixellate[
             width: Int
         ](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
             var pixel_idx = idx
@@ -29,4 +29,4 @@ struct Pixellate:
             pixel_idx[1] = (pixel_idx[1] // Int(pixel_width)) * Int(pixel_width)
             return image.load[width](pixel_idx)
 
-        foreach[func, target=target](out, ctx)
+        foreach[pixellate, target=target](out, ctx)
