@@ -1,6 +1,4 @@
 import compiler
-from builtin.simd import _pow
-from math import sqrt
 from utils.index import Index, IndexList
 from max.tensor import ManagedTensorSlice, foreach
 from runtime.asyncrt import MojoCallContextPtr

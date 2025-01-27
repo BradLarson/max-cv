@@ -25,7 +25,7 @@ def add_blend(
             TensorType(dtype=background_image.dtype, shape=background_image.shape)
         ],
         parameters={
-            "blend_mode": 0, # TODO: "add"
+            "blend_mode": "add"
         }
     )[0].tensor
 
@@ -58,7 +58,7 @@ def dissolve_blend(
             TensorType(dtype=background_image.dtype, shape=background_image.shape)
         ],
         parameters={
-            "blend_mode": 1, # TODO: "dissolve"
+            "blend_mode": "dissolve"
         }
     )[0].tensor
 
@@ -85,6 +85,6 @@ def multiply_blend(
             TensorType(dtype=background_image.dtype, shape=background_image.shape)
         ],
         parameters={
-            "blend_mode": 2, # TODO: "multiply"
+            "blend_mode": "multiply"
         }
     )[0].tensor

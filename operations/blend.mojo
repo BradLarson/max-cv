@@ -41,7 +41,7 @@ struct Blend:
     @staticmethod
     fn execute[
         type: DType,
-        blend_mode: Int, //,  # FIXME: Switch to String for mode.
+        blend_mode: StringLiteral,
         target: StringLiteral,
     ](
         out: ManagedTensorSlice[type],
@@ -62,18 +62,15 @@ struct Blend:
             var background_pixel = background_image.load[width](idx)
 
             @parameter
-            # if blend_mode == "add":
-            if blend_mode == 0:
+            if blend_mode == "add":
                 return _add[float_dtype = foreground_image.type](
                     foreground_pixel, background_pixel, converted_intensity
                 )
-            # elif blend_mode == "dissolve":
-            elif blend_mode == 1:
+            elif blend_mode == "dissolve":
                 return _mix[float_dtype = foreground_image.type](
                     foreground_pixel, background_pixel, converted_intensity
                 )
-            elif blend_mode == 2:
-                # elif blend_mode == "dissolve":
+            elif blend_mode == "multiply":
                 return _multiply[float_dtype = foreground_image.type](
                     foreground_pixel, background_pixel, converted_intensity
                 )
