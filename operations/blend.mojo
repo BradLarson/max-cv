@@ -50,6 +50,8 @@ struct Blend:
         foreground_image: ManagedTensorSlice[type, out.rank],
         ctx: MojoCallContextPtr,
     ):
+        var converted_intensity = intensity.cast[foreground_image.type]()
+
         @parameter
         @always_inline
         fn blend[
@@ -57,7 +59,6 @@ struct Blend:
         ](idx: IndexList[foreground_image.rank]) -> SIMD[
             foreground_image.type, width
         ]:
-            var converted_intensity = intensity.cast[foreground_image.type]()
             var foreground_pixel = foreground_image.load[width](idx)
             var background_pixel = background_image.load[width](idx)
 
@@ -80,3 +81,5 @@ struct Blend:
                 return foreground_pixel
 
         foreach[blend, target=target](out, ctx)
+
+        _ = converted_intensity
