@@ -2,14 +2,14 @@ import compiler
 from builtin.simd import _pow
 from math import sqrt
 from utils.index import IndexList
-from max.tensor import ManagedTensorSlice, foreach
-from runtime.asyncrt import MojoCallContextPtr
+from max.tensor import foreach, OutputTensor, InputTensor
+from runtime.asyncrt import DeviceContextPtr
 
 
 # FIXME: This makes a lot of assumptions about the inbound tensor.
 fn edge_clamped_offset_load[
     width: Int, _rank: Int, type: DType, height_offset: Int, width_offset: Int
-](tensor: ManagedTensorSlice[type, _rank], index: IndexList[_rank]) -> SIMD[
+](tensor: InputTensor[type=type, rank=_rank], index: IndexList[_rank]) -> SIMD[
     type, width
 ]:
     var clamped_index = index
@@ -28,11 +28,11 @@ struct SobelEdgeDetection:
     fn execute[
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice,
+        out: OutputTensor,
         strength: Float32,
-        image: ManagedTensorSlice[out.type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        image: InputTensor[type=out.type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn sobel[

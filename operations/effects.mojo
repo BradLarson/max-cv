@@ -1,7 +1,7 @@
 import compiler
 from utils.index import Index, IndexList
-from max.tensor import ManagedTensorSlice, foreach
-from runtime.asyncrt import MojoCallContextPtr
+from max.tensor import foreach, OutputTensor, InputTensor
+from runtime.asyncrt import DeviceContextPtr
 
 
 @compiler.register("pixellate", num_dps_outputs=1)
@@ -12,11 +12,11 @@ struct Pixellate:
     fn execute[
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice,
+        out: OutputTensor,
         pixel_width: Int32,
-        image: ManagedTensorSlice[out.type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        image: InputTensor[type=out.type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn pixellate[

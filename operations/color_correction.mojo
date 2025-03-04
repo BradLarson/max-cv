@@ -1,8 +1,8 @@
 import compiler
 from builtin.simd import _pow
 from utils.index import IndexList
-from max.tensor import ManagedTensorSlice, foreach
-from runtime.asyncrt import MojoCallContextPtr
+from max.tensor import OutputTensor, InputTensor, foreach
+from runtime.asyncrt import DeviceContextPtr
 
 
 @compiler.register("brightness", num_dps_outputs=1)
@@ -13,11 +13,11 @@ struct Brightness:
     fn execute[
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice,
+        out: OutputTensor,
         brightness: Float32,
-        image: ManagedTensorSlice[out.type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        image: InputTensor[type=out.type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn add[
@@ -36,11 +36,11 @@ struct Gamma:
     fn execute[
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice,
+        out: OutputTensor,
         gamma: Float32,
-        image: ManagedTensorSlice[out.type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        image: InputTensor[type=out.type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn pow[
@@ -59,10 +59,10 @@ struct Luminance:
     fn execute[
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice,
-        image: ManagedTensorSlice[out.type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        out: OutputTensor,
+        image: InputTensor[type=out.type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn luminance[

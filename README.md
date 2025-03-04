@@ -28,7 +28,7 @@ Apache License v2.0 with LLVM Exceptions.
 
 ## Technical requirements ##
 
-[MAX](https://docs.modular.com/max/) 24.6 or newer (nightly preferred). The
+[MAX](https://docs.modular.com/max/) 25.2 or newer (nightly preferred). The
 command-line tool Magic will handle all dependency setup for MAX, and can be
 installed via
 
