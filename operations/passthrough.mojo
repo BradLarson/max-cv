@@ -1,7 +1,7 @@
 import compiler
 from utils.index import IndexList
-from max.tensor import ManagedTensorSlice, foreach
-from runtime.asyncrt import MojoCallContextPtr
+from max.tensor import ManagedTensorSlice, foreach, OutputTensor, InputTensor
+from runtime.asyncrt import DeviceContextPtr
 
 
 @compiler.register("passthrough", num_dps_outputs=1)
@@ -12,12 +12,12 @@ struct Passthrough:
         target: StringLiteral,
     ](
         # as num_dps_outputs=1, the first argument is the "output"
-        out: ManagedTensorSlice,
+        out: OutputTensor,
         # starting here are the list of inputs
-        image: ManagedTensorSlice[out.type, out.rank],
+        image: InputTensor[type=out.type, rank=out.rank],
         # the context is needed for some GPU calls
-        ctx: MojoCallContextPtr,
-    ):
+        ctx: DeviceContextPtr,
+    ) raises:
         @parameter
         @always_inline
         fn func[

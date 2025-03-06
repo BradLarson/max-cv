@@ -1,7 +1,7 @@
 import compiler
 from utils.index import IndexList
-from max.tensor import ManagedTensorSlice, foreach
-from runtime.asyncrt import MojoCallContextPtr
+from max.tensor import OutputTensor, InputTensor, foreach
+from runtime.asyncrt import DeviceContextPtr
 
 
 fn _add[
@@ -44,12 +44,12 @@ struct Blend:
         blend_mode: StringLiteral,
         target: StringLiteral,
     ](
-        out: ManagedTensorSlice[type],
+        out: OutputTensor[type=type],
         intensity: Float32,
-        background_image: ManagedTensorSlice[type, out.rank],
-        foreground_image: ManagedTensorSlice[type, out.rank],
-        ctx: MojoCallContextPtr,
-    ):
+        background_image: InputTensor[type=type, rank=out.rank],
+        foreground_image: InputTensor[type=type, rank=out.rank],
+        ctx: DeviceContextPtr,
+    ) raises:
         var converted_intensity = intensity.cast[foreground_image.type]()
 
         @parameter
