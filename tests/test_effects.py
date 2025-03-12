@@ -19,3 +19,22 @@ def test_pixellate(session: InferenceSession) -> None:
 
     assert result.dtype == DType.float32
     assert result.shape == (4, 6, 3)
+
+def test_gaussian_blur(session: InferenceSession) -> None:
+    device = CPU()
+    image_tensor = generate_test_tensor(device, dtype=DType.float32)
+
+    graph = Graph(
+        "gaussian blur",
+        forward=lambda x: ops.gaussian_blur(x, 3, 3.0, True),
+        input_types=[
+            TensorType(image_tensor.dtype, shape=image_tensor.shape),
+        ],
+    )
+    result = run_graph(graph, image_tensor, session)
+
+    assert result.dtype == DType.float32
+    # This check is a bit iffy depending on the input shape, could be off by 1
+    # in some cases
+    assert result.shape == (4, 6, 3)
+    assert image_tensor != result

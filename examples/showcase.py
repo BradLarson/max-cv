@@ -99,6 +99,25 @@ def pixellate(value):
     print("Pixellating image with pixel width:", value)
     run_pipeline(operations=lambda input: ops.pixellate(input, value))
 
+@showcase.command(name="gaussian_blur")
+@click.option(
+    "--kernel_size",
+    type=int,
+    default=16,
+    show_default=True,
+    help="the size of the convolution kernel"
+)
+@click.option(
+    "--sigma",
+    type=float,
+    default=4.0,
+    show_default=True,
+    help="gaussian filter stddev"
+)
+def guassian(kernel_size, sigma):
+    print("Running gaussian blur with size and sigma:", kernel_size, sigma)
+    run_pipeline(operations=lambda input: ops.gaussian_blur(input, kernel_size, sigma))
+
 # Blends.
 
 @showcase.command(name="add_blend")
