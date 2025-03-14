@@ -4,7 +4,7 @@ from max.tensor import ManagedTensorSlice, foreach, OutputTensor, InputTensor
 from runtime.asyncrt import DeviceContextPtr
 
 
-@compiler.register("passthrough", num_dps_outputs=1)
+@compiler.register("passthrough")
 struct Passthrough:
     @staticmethod
     fn execute[
@@ -31,6 +31,6 @@ struct Passthrough:
     # output shapes in the graph.
     @staticmethod
     fn shape(
-        x: ManagedTensorSlice,
+        x: InputTensor,
     ) raises -> IndexList[x.rank]:
         raise "NotImplemented"

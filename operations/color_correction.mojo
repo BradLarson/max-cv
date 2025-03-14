@@ -5,7 +5,7 @@ from max.tensor import OutputTensor, InputTensor, foreach
 from runtime.asyncrt import DeviceContextPtr
 
 
-@compiler.register("brightness", num_dps_outputs=1)
+@compiler.register("brightness")
 struct Brightness:
     """Adjusts the brightness of an image."""
 
@@ -28,7 +28,7 @@ struct Brightness:
         foreach[add, target=target](out, ctx)
 
 
-@compiler.register("gamma", num_dps_outputs=1)
+@compiler.register("gamma")
 struct Gamma:
     """Adjusts the gamma of an image."""
 
@@ -51,7 +51,7 @@ struct Gamma:
         foreach[pow, target=target](out, ctx)
 
 
-@compiler.register("luminance", num_dps_outputs=1)
+@compiler.register("luminance")
 struct Luminance:
     """Reduce an RGB image to its luminance channel."""
 

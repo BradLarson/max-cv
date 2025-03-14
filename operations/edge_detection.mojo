@@ -20,7 +20,7 @@ fn edge_clamped_offset_load[
     return tensor.load[width](clamped_index)
 
 
-@compiler.register("sobel", num_dps_outputs=1)
+@compiler.register("sobel")
 struct SobelEdgeDetection:
     """Performs Sobel edge detection."""
 

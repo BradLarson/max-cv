@@ -34,7 +34,7 @@ fn _multiply[
     return foreground_pixel * background_pixel
 
 
-@compiler.register("blend", num_dps_outputs=1)
+@compiler.register("blend")
 struct Blend:
     """Performs a two-image blend, using a specified blend function."""
 

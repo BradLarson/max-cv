@@ -3,8 +3,7 @@ from utils.index import Index, IndexList
 from max.tensor import foreach, OutputTensor, InputTensor
 from runtime.asyncrt import DeviceContextPtr
 
-
-@compiler.register("pixellate", num_dps_outputs=1)
+@compiler.register("pixellate")
 struct Pixellate:
     """Pixellates an image into small squares."""
 
