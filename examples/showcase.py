@@ -151,6 +151,42 @@ def add_blend():
         num_inputs=2
     )
 
+# Drawing.
+
+@showcase.command(name="draw_circle")
+@click.option(
+    "--radius",
+    type=int,
+    default=120,
+    show_default=True,
+    help="radius of the circle"
+)
+@click.option(
+    "--width",
+    type=int,
+    default=5,
+    show_default=True,
+    help="thickness of the circle"
+)
+@click.option(
+    "--center",
+    type=int,
+    nargs=2,
+    default=None,
+    show_default=True,
+    help="center point of the circle"
+)
+@click.option(
+    "--color",
+    type=int,
+    nargs=3,
+    default=(255, 0, 0),
+    show_default=True,
+    help="RGB color value of the circle"
+)
+def draw_circle(radius, color, width, center):
+    print(f"drawing a circle on the image with radius {radius}, color {color}, width: {width}, center point {center or "default"}")
+    run_pipeline(operations=lambda input: ops.draw_circle(input, radius, color, width, center))
 
 def run_pipeline(operations: Callable, num_inputs: int = 1):
     # Place the graph on a GPU, if available. Fall back to CPU if not.

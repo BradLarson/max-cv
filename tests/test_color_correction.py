@@ -37,7 +37,7 @@ def test_gamma(session: InferenceSession) -> None:
 
 def test_luminance_threshold(session: InferenceSession) -> None:
     device = CPU()
-    image_tensor = generate_test_tensor(device, dtype=DType.float32, channels=1)
+    image_tensor = generate_test_tensor(device, dtype=DType.float32, shape=(4, 6, 1))
     graph = Graph(
         "luminance_threshold",
         forward=lambda x: ops.luminance_threshold(x, threshold=0.5),
@@ -67,7 +67,7 @@ def test_rgb_to_luminance(session: InferenceSession) -> None:
 
 def test_luminance_to_rgb(session: InferenceSession) -> None:
     device = CPU()
-    image_tensor = generate_test_tensor(device, dtype=DType.float32, channels=1)
+    image_tensor = generate_test_tensor(device, dtype=DType.float32, shape=(4, 6, 1))
     graph = Graph(
         "luminance_to_rgb",
         forward=lambda x: ops.luminance_to_rgb(x),
