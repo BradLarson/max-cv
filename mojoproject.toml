@@ -7,23 +7,25 @@ platforms = ["osx-arm64", "linux-aarch64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
-filter-single-image = { cmd="mojo package operations/ -o operations.mojopkg && python examples/filter_single_image.py", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+package_ops = { cmd = "mojo package operations/ -o operations.mojopkg" }
+filter-single-image = { cmd="python examples/filter_single_image.py", depends-on=["package_ops"]}
+bench = { cmd = "mojo ./benchmarks/bench.mojo", depends-on=["package_ops"]}
 
 [feature.test.tasks]
-test = { cmd="mojo package operations/ -o operations.mojopkg && pytest", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+test = { cmd = "pytest", depends-on=["package_ops"]}
 
 [feature.test.dependencies]
 pytest = ">=8.3.2, <9"
 
 [feature.notebook.tasks]
-notebook = { cmd="mojo package operations/ -o operations.mojopkg && cp operations.mojopkg examples/ && jupyter notebook", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+notebook = { cmd = "cp operations.mojopkg examples/ && jupyter notebook", depends-on=["package_ops"]}
 
 [feature.notebook.dependencies]
 matplotlib = ">=3.9.0,<4"
 notebook = ">=7.3.2,<8"
 
 [feature.showcase.tasks]
-showcase = { cmd="mojo package operations/ -o operations.mojopkg && python examples/showcase.py $0", env={ MODULAR_ONLY_USE_NEW_EXTENSIBILITY_API="true" }}
+showcase = { cmd = "python examples/showcase.py $0", depends-on=["package_ops"]}
 
 [feature.showcase.dependencies]
 click = ">=8.1.7"
