@@ -41,8 +41,8 @@ struct Blend:
     @staticmethod
     fn execute[
         type: DType,
-        blend_mode: StringLiteral,
-        target: StringLiteral,
+        blend_mode: StaticString,
+        target: StaticString,
     ](
         out: OutputTensor[type=type],
         intensity: Float32,

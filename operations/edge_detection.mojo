@@ -26,7 +26,7 @@ struct SobelEdgeDetection:
 
     @staticmethod
     fn execute[
-        target: StringLiteral,
+        target: StaticString,
     ](
         out: OutputTensor,
         strength: Float32,

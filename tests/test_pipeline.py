@@ -13,11 +13,12 @@ def test_no_ops_pipeline() -> None:
     with ImagePipeline(
         "passthrough",
         image_tensor.shape,
-        pipeline_dtype=DType.float32
+        pipeline_dtype=DType.float32,
+        device=device
     ) as pipeline:
         pipeline.output(pipeline.input_image)
 
-    pipeline.compile(device)
+    pipeline.compile()
     result = pipeline(image_tensor)
     result = result.to(CPU())
 
