@@ -11,7 +11,7 @@ struct Brightness:
 
     @staticmethod
     fn execute[
-        target: StringLiteral,
+        target: StaticString,
     ](
         out: OutputTensor,
         brightness: Float32,
@@ -34,7 +34,7 @@ struct Gamma:
 
     @staticmethod
     fn execute[
-        target: StringLiteral,
+        target: StaticString,
     ](
         out: OutputTensor,
         gamma: Float32,
@@ -57,7 +57,7 @@ struct Luminance:
 
     @staticmethod
     fn execute[
-        target: StringLiteral,
+        target: StaticString,
     ](
         out: OutputTensor,
         image: InputTensor[type=out.type, rank=out.rank],

@@ -1,10 +1,12 @@
 from max.dtype import DType
-from max.graph import ops, TensorType, TensorValue
+from max.graph import ops, TensorType, TensorValue, DeviceRef
+from max.driver import Device
 from .common import assert_rgb
 import numpy as np
 from typing import Optional
 
 def draw_circle(
+        device: Device,
         image: TensorValue,
         radius: int,
         color: tuple,
@@ -33,5 +35,5 @@ def draw_circle(
             ops.constant(width, dtype=DType.float32),
             ops.constant(np.array(c), dtype=DType.float32),
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape)],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=DeviceRef.from_device(device))],
     )[0].tensor

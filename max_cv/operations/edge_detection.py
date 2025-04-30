@@ -1,10 +1,11 @@
 from max.dtype import DType
-from max.graph import ops, TensorType, TensorValue
+from max.graph import ops, TensorType, TensorValue, DeviceRef
+from max.driver import Device
 from .common import assert_luminance
 """Edge detection operations."""
 
 
-def sobel_edge_detection(image: TensorValue, strength: float = 1.0) -> TensorValue:
+def sobel_edge_detection(device: Device, image: TensorValue, strength: float = 1.0) -> TensorValue:
     """Performs Sobel edge detection, with edges in white.
 
     Args:
@@ -22,5 +23,5 @@ def sobel_edge_detection(image: TensorValue, strength: float = 1.0) -> TensorVal
             ops.constant(strength, dtype=DType.float32),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape)],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=DeviceRef.from_device(device))],
     )[0].tensor

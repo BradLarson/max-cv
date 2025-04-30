@@ -3,6 +3,7 @@ from max.driver import CPU, Device, Tensor
 from max.dtype import DType
 from max.graph import Graph
 from max.engine import InferenceSession
+from pathlib import Path
 
 def generate_test_tensor(device: Device, dtype: DType, shape: tuple = (4, 6, 3)) -> Tensor:
     # TODO: Actual values.
@@ -13,3 +14,10 @@ def run_graph(graph: Graph, input: Tensor, session: InferenceSession) -> Tensor:
     model = session.load(graph)
     result = model.execute(input)[0]
     return result.to(CPU())
+
+def make_graph(name, **kwargs) -> Graph:
+    return Graph(
+        name,
+        **kwargs,
+        custom_extensions=[Path(__file__).parent / '..' / "operations"],
+    )

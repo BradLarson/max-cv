@@ -11,7 +11,7 @@ sys.path.append(str(path_root))
 from matplotlib import pyplot as plt
 from max_cv import ImagePipeline, load_image_into_tensor
 from max_cv import operations as ops
-from max.driver import Accelerator, accelerator_count, CPU
+from max.driver import Accelerator, accelerator_count, CPU, Device
 from max.dtype import DType
 from max.graph import TensorValue
 
@@ -31,7 +31,7 @@ def showcase():
 )
 def brightness(value):
     print("Adjusting brightness by:", value)
-    run_pipeline(operations=lambda input: ops.brightness(input, value))
+    run_pipeline(operations=lambda device, input: ops.brightness(device, input, value))
 
 @showcase.command(name="gamma")
 @click.option(
@@ -43,7 +43,7 @@ def brightness(value):
 )
 def gamma(value):
     print("Adjusting gamma by:", value)
-    run_pipeline(operations=lambda input: ops.gamma(input, value))
+    run_pipeline(operations=lambda device, input: ops.gamma(device, input, value))
 
 @showcase.command(name="luminance_threshold")
 @click.option(
@@ -55,16 +55,16 @@ def gamma(value):
 )
 def luminance_threshold(threshold):
     print("Thresholding luminance at:", threshold)
-    def thresholding(input: TensorValue) -> TensorValue:
-        processed_image = ops.rgb_to_luminance(input)
-        return ops.luminance_threshold(processed_image, threshold=threshold)
+    def thresholding(device: Device, input: TensorValue) -> TensorValue:
+        processed_image = ops.rgb_to_luminance(device, input)
+        return ops.luminance_threshold(device, processed_image, threshold=threshold)
 
     run_pipeline(operations=thresholding)
 
 @showcase.command(name="rgb_to_luminance")
 def rgb_to_luminance():
     print("Reducing image to luminance channel.")
-    run_pipeline(operations=lambda input: ops.rgb_to_luminance(input))
+    run_pipeline(operations=lambda device, input: ops.rgb_to_luminance(device, input))
 
 # Edge detection.
 
@@ -79,9 +79,9 @@ def rgb_to_luminance():
 def sobel(value):
     print("Performing Sobel edge detection with strength:", value)
 
-    def edge_detection(input: TensorValue) -> TensorValue:
-        processed_image = ops.rgb_to_luminance(input)
-        return ops.sobel_edge_detection(processed_image, strength=1.0)
+    def edge_detection(device: Device, input: TensorValue) -> TensorValue:
+        processed_image = ops.rgb_to_luminance(device, input)
+        return ops.sobel_edge_detection(device, processed_image, strength=1.0)
 
     run_pipeline(operations=edge_detection)
 
@@ -97,7 +97,7 @@ def sobel(value):
 )
 def pixellate(value):
     print("Pixellating image with pixel width:", value)
-    run_pipeline(operations=lambda input: ops.pixellate(input, value))
+    run_pipeline(operations=lambda device, input: ops.pixellate(device, input, value))
 
 @showcase.command(name="gaussian_blur")
 @click.option(
@@ -116,7 +116,7 @@ def pixellate(value):
 )
 def guassian(kernel_size, sigma):
     print("Running gaussian blur with size and sigma:", kernel_size, sigma)
-    run_pipeline(operations=lambda input: ops.gaussian_blur(input, kernel_size, sigma))
+    run_pipeline(operations=lambda device, input: ops.gaussian_blur(device, input, kernel_size, sigma))
 
 # Blends.
 
@@ -124,7 +124,7 @@ def guassian(kernel_size, sigma):
 def add_blend():
     print("Applying additive blend on two images.")
     run_pipeline(
-        operations=lambda inputs: ops.add_blend(inputs[0], inputs[1]),
+        operations=lambda device, inputs: ops.add_blend(device, inputs[0], inputs[1]),
         num_inputs=2
     )
 
@@ -139,7 +139,7 @@ def add_blend():
 def dissolve_blend(intensity):
     print("Applying dissolve blend on two images with intensity:", intensity)
     run_pipeline(
-        operations=lambda inputs: ops.dissolve_blend(inputs[0], inputs[1], intensity),
+        operations=lambda device, inputs: ops.dissolve_blend(device, inputs[0], inputs[1], intensity),
         num_inputs=2
     )
 
@@ -147,7 +147,7 @@ def dissolve_blend(intensity):
 def add_blend():
     print("Applying multiply blend on two images.")
     run_pipeline(
-        operations=lambda inputs: ops.multiply_blend(inputs[0], inputs[1]),
+        operations=lambda device, inputs: ops.multiply_blend(device, inputs[0], inputs[1]),
         num_inputs=2
     )
 
@@ -186,7 +186,7 @@ def add_blend():
 )
 def draw_circle(radius, color, width, center):
     print(f"drawing a circle on the image with radius {radius}, color {color}, width: {width}, center point {center or "default"}")
-    run_pipeline(operations=lambda input: ops.draw_circle(input, radius, color, width, center))
+    run_pipeline(operations=lambda device, input: ops.draw_circle(device, input, radius, color, width, center))
 
 def run_pipeline(operations: Callable, num_inputs: int = 1):
     # Place the graph on a GPU, if available. Fall back to CPU if not.
@@ -206,17 +206,18 @@ def run_pipeline(operations: Callable, num_inputs: int = 1):
         "filter_single_image",
         image_tensor.shape,
         pipeline_dtype=DType.float32,
+        device=device,
         num_inputs=num_inputs
     ) as pipeline:
         if num_inputs == 1:
-            processed_image = operations(pipeline.input_image)
+            processed_image = operations(device, pipeline.input_image)
         else:
-            processed_image = operations(pipeline.input_images)
+            processed_image = operations(device, pipeline.input_images)
         pipeline.output(processed_image)
 
     # Compile and run the pipeline.
     print("Compiling graph...")
-    pipeline.compile(device)
+    pipeline.compile()
     print("Compilation finished. Running image pipeline...")
     if num_inputs == 1:
         result = pipeline(image_tensor)
