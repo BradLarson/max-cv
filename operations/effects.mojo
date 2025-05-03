@@ -9,7 +9,7 @@ struct Pixellate:
 
     @staticmethod
     fn execute[
-        target: StringLiteral,
+        target: StaticString,
     ](
         out: OutputTensor,
         pixel_width: Int32,

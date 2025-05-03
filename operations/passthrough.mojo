@@ -9,7 +9,7 @@ struct Passthrough:
     @staticmethod
     fn execute[
         # e.g. "CUDA" or "CPU"
-        target: StringLiteral,
+        target: StaticString,
     ](
         # as num_dps_outputs=1, the first argument is the "output"
         out: OutputTensor,
