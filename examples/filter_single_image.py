@@ -26,14 +26,15 @@ if __name__ == "__main__":
     with ImagePipeline(
         "filter_single_image",
         image_tensor.shape,
-        pipeline_dtype=DType.float32
+        pipeline_dtype=DType.float32,
+        device=device
     ) as pipeline:
-        processed_image = ops.pixellate(pipeline.input_image, pixel_width=20)
+        processed_image = ops.pixellate(device, pipeline.input_image, pixel_width=20)
         pipeline.output(processed_image)
 
     # Compile and run the pipeline.
     print("Compiling graph...")
-    pipeline.compile(device)
+    pipeline.compile()
     print("Compilation finished. Running image pipeline...")
     result = pipeline(image_tensor)
     print("Processing finished.")

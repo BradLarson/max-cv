@@ -9,7 +9,7 @@ struct DrawCircle:
 
     @staticmethod
     fn execute[
-        target: StringLiteral
+        target: StaticString
     ](
         x: OutputTensor,
         image: InputTensor[type=x.type, rank=x.rank],

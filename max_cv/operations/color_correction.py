@@ -1,9 +1,10 @@
 from max.dtype import DType
-from max.graph import ops, Shape, TensorType, TensorValue
+from max.graph import ops, Shape, TensorType, TensorValue, DeviceRef
+from max.driver import Device
 from .common import assert_luminance, assert_rgb
 """Color correction operations."""
 
-def brightness(image: TensorValue, brightness: float) -> TensorValue:
+def brightness(device: Device, image: TensorValue, brightness: float) -> TensorValue:
     """Adjusts the brightness of an image.
 
     Args:
@@ -19,16 +20,16 @@ def brightness(image: TensorValue, brightness: float) -> TensorValue:
     return ops.custom(
         name="brightness",
         values=[
-            ops.constant(brightness, dtype=DType.float32),
+            ops.constant(brightness, dtype=DType.float32, device=DeviceRef.from_device(device)),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape)],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=DeviceRef.from_device(device))],
     )[0].tensor
 
     # The simple way
     # return image + brightness
 
-def gamma(image: TensorValue, gamma: float) -> TensorValue:
+def gamma(device: Device, image: TensorValue, gamma: float) -> TensorValue:
     """Adjusts the gamma of an image.
 
     Args:
@@ -40,20 +41,21 @@ def gamma(image: TensorValue, gamma: float) -> TensorValue:
         A value representing the corrected image.
     """
     assert_rgb(image)
+    dref = DeviceRef.from_device(device)
     # The custom ops way.
     return ops.custom(
         name="gamma",
         values=[
-            ops.constant(gamma, dtype=DType.float32),
+            ops.constant(gamma, dtype=DType.float32, device=dref),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape)],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],
     )[0].tensor
 
     # The simple way.
     # return ops.pow(image, gamma)
 
-def luminance_threshold(image: TensorValue, threshold: float) -> TensorValue:
+def luminance_threshold(device: Device, image: TensorValue, threshold: float) -> TensorValue:
     """Sets a pixel to black if below this luminance threshold, white
     otherwise.
 
@@ -66,11 +68,11 @@ def luminance_threshold(image: TensorValue, threshold: float) -> TensorValue:
     """
     assert_luminance(image)
     return ops.cast(
-        ops.greater(image, ops.constant(threshold, dtype=image.dtype)),
+        ops.greater(image, ops.constant(threshold, dtype=image.dtype, device=DeviceRef.from_device(device))),
         image.dtype
     )
 
-def rgb_to_luminance(image: TensorValue) -> TensorValue:
+def rgb_to_luminance(device: Device, image: TensorValue) -> TensorValue:
     """Reduces an RGB image to only its luminance channel.
 
     Args:
@@ -87,7 +89,7 @@ def rgb_to_luminance(image: TensorValue) -> TensorValue:
     return ops.custom(
         name="luminance",
         values=[image],
-        out_types=[TensorType(dtype=image.dtype, shape=luminance_shape)],
+        out_types=[TensorType(dtype=image.dtype, shape=luminance_shape, device=DeviceRef.from_device(device))],
     )[0].tensor
 
 def luminance_to_rgb(image: TensorValue) -> TensorValue:

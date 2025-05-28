@@ -1,11 +1,12 @@
 from max.dtype import DType
-from max.graph import ops, TensorType, TensorValue
+from max.graph import ops, TensorType, TensorValue, DeviceRef
+from max.driver import Device
 from .common import assert_rgb
 import numpy as np
 """Stylized image effects."""
 
 
-def pixellate(image: TensorValue, pixel_width: int) -> TensorValue:
+def pixellate(device: Device, image: TensorValue, pixel_width: int) -> TensorValue:
     """Pixellates an image into small squares.
 
     Args:
@@ -16,16 +17,20 @@ def pixellate(image: TensorValue, pixel_width: int) -> TensorValue:
         A value representing the corrected image.
     """
     assert_rgb(image)
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="pixellate",
         values=[
-            ops.constant(pixel_width, dtype=DType.int32),
+            ops.constant(pixel_width, dtype=DType.int32, device=dref),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape)],
+        out_types=[TensorType(
+            dtype=image.dtype,
+            shape=image.shape,
+            device=dref)],
     )[0].tensor
 
-def gaussian_blur(image: TensorValue, kernel_size: int=3, sigma: float=1., padding: bool=False) -> TensorValue:
+def gaussian_blur(device: Device, image: TensorValue, kernel_size: int=3, sigma: float=1., padding: bool=False) -> TensorValue:
     """Apply a gaussian blur affect to the image.
 
     Args:
@@ -47,7 +52,7 @@ def gaussian_blur(image: TensorValue, kernel_size: int=3, sigma: float=1., paddi
     arr =  (kernel / np.sum(kernel))
 
     # reshape the expected RSCF layout
-    kernel = ops.constant(arr, dtype=image.dtype)
+    kernel = ops.constant(arr, dtype=image.dtype, device=DeviceRef.from_device(device))
     kernel = kernel.reshape((N, N, 1, 1))
     kernel = kernel.broadcast_to((N, N, 1, 3))
     

@@ -7,32 +7,31 @@ platforms = ["osx-arm64", "linux-aarch64", "linux-64"]
 version = "0.1.0"
 
 [tasks]
-package_ops = { cmd = "mojo package operations/ -o operations.mojopkg" }
-filter-single-image = { cmd="python examples/filter_single_image.py", depends-on=["package_ops"]}
-bench = { cmd = "mojo ./benchmarks/bench.mojo", depends-on=["package_ops"]}
+filter-single-image = { cmd="python examples/filter_single_image.py" }
+bench = { cmd = "mojo ./benchmarks/bench.mojo"}
 
 [feature.test.tasks]
-test = { cmd = "pytest", depends-on=["package_ops"]}
+test = { cmd = "pytest"}
 
 [feature.test.dependencies]
 pytest = ">=8.3.2, <9"
 
 [feature.notebook.tasks]
-notebook = { cmd = "cp operations.mojopkg examples/ && jupyter notebook", depends-on=["package_ops"]}
+notebook = { cmd = "cp operations.mojopkg examples/ && jupyter notebook"}
 
 [feature.notebook.dependencies]
 matplotlib = ">=3.9.0,<4"
 notebook = ">=7.3.2,<8"
 
 [feature.showcase.tasks]
-showcase = { cmd = "python examples/showcase.py $0", depends-on=["package_ops"]}
+showcase = { cmd = "python examples/showcase.py $0"}
 
 [feature.showcase.dependencies]
 click = ">=8.1.7"
 matplotlib = ">=3.9.0,<4"
 
 [dependencies]
-max = ">=25.2.0.dev2025031105,<26"
+max = ">=25.3.0.dev2025042905,<26"
 pillow = ">=11.0.0,<12"
 
 [environments]

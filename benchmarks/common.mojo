@@ -37,6 +37,7 @@ fn _static_spec[
         exclusive=True,
         in_lambda=None,
         out_lambda=None,
+        out_compute_lambda=None,
     )
 
 @value

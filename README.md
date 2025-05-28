@@ -28,7 +28,7 @@ Apache License v2.0 with LLVM Exceptions.
 
 ## Technical requirements ##
 
-[MAX](https://docs.modular.com/max/) 25.2 or newer (nightly preferred). The
+[MAX](https://docs.modular.com/max/) 25.3 or newer (nightly preferred). The
 command-line tool Magic will handle all dependency setup for MAX, and can be
 installed via
 
@@ -80,9 +80,10 @@ processing pipeline that adjusts the brightness of an incoming image:
 with ImagePipeline(
     "adjust_brightness",
     image_tensor.shape,
-    pipeline_dtype=DType.float32
+    pipeline_dtype=DType.float32,
+    device=device
 ) as pipeline:
-    processed_image = ops.brightness(pipeline.input_image, 0.5)
+    processed_image = ops.brightness(device, pipeline.input_image, 0.5)
     pipeline.output(processed_image)
 ```
 
@@ -93,7 +94,7 @@ lets subsequent operations be fused together, as well as applying other
 optimizations.
 
 ```python
-pipeline.compile(device)
+pipeline.compile()
 ```
 
 Once the pipeline has been compiled, it can be run quickly against as many

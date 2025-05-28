@@ -1,9 +1,11 @@
 from max.dtype import DType
-from max.graph import ops, TensorType, TensorValue
+from max.graph import ops, TensorType, TensorValue, DeviceRef
+from max.driver import Device
 from .common import assert_rgb
 """Two-image blends."""
 
 def add_blend(
+    device: Device,
     background_image: TensorValue,
     foreground_image: TensorValue,
 ) -> TensorValue:
@@ -17,12 +19,15 @@ def add_blend(
     return ops.custom(
         name="blend",
         values=[
-            ops.constant(1.0, dtype=DType.float32),
+            ops.constant(1.0, dtype=DType.float32, device=DeviceRef.from_device(device)),
             background_image,
             foreground_image
         ],
         out_types=[
-            TensorType(dtype=background_image.dtype, shape=background_image.shape)
+            TensorType(
+                dtype=background_image.dtype,
+                shape=background_image.shape,
+                device=DeviceRef.from_device(device))
         ],
         parameters={
             "blend_mode": "add"
@@ -31,6 +36,7 @@ def add_blend(
 
 
 def dissolve_blend(
+    device: Device,
     background_image: TensorValue,
     foreground_image: TensorValue,
     intensity: float
@@ -55,7 +61,10 @@ def dissolve_blend(
             foreground_image
         ],
         out_types=[
-            TensorType(dtype=background_image.dtype, shape=background_image.shape)
+            TensorType(
+                dtype=background_image.dtype,
+                shape=background_image.shape,
+                device=DeviceRef.from_device(device))
         ],
         parameters={
             "blend_mode": "dissolve"
@@ -64,6 +73,7 @@ def dissolve_blend(
 
 
 def multiply_blend(
+    device: Device,
     background_image: TensorValue,
     foreground_image: TensorValue,
 ) -> TensorValue:
@@ -82,7 +92,10 @@ def multiply_blend(
             foreground_image
         ],
         out_types=[
-            TensorType(dtype=background_image.dtype, shape=background_image.shape)
+            TensorType(
+                dtype=background_image.dtype,
+                shape=background_image.shape,
+                device=DeviceRef.from_device(device))
         ],
         parameters={
             "blend_mode": "multiply"

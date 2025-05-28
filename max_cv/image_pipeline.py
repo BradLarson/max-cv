@@ -1,7 +1,7 @@
 from max.driver import Device, Tensor
 from max.dtype import DType
 from max.engine import InferenceSession, Model
-from max.graph import Graph, Shape, TensorType, TensorValue
+from max.graph import Graph, Shape, TensorType, TensorValue, DeviceRef
 from pathlib import Path
 from typing import List
 from .io import normalize_image, restore_image
@@ -15,23 +15,28 @@ class ImagePipeline:
     input_image: TensorValue
     input_images: List[TensorValue]
     output_image: TensorValue
+    device: Device
 
     def __init__(
         self,
         name: str,
         shape: Shape,
         pipeline_dtype: DType,
+        device: Device,
         num_inputs: int = 1
     ):
         self.name = name
         self._shape = shape
         self._pipeline_dtype = pipeline_dtype
+        self.device = device
         input_types = [
-            TensorType(DType.uint8, shape=self._shape) for i in range(num_inputs)
+            TensorType(DType.uint8, shape=self._shape, device=DeviceRef.from_device(device)) for _ in range(num_inputs)
         ]
         self._graph = Graph(
             self.name,
-            input_types=input_types
+            input_types=input_types,
+            # TODO: Find a way to not hardcode this
+            custom_extensions=[Path(__file__).parent / '..' / "operations"]
         )
 
     def __enter__(self):
@@ -53,13 +58,10 @@ class ImagePipeline:
         """Mark the output of a processing pipeline."""
         self.output_image = image
 
-    def compile(self, device: Device):
+    def compile(self):
         """Compile the pipeline computational graph for a given device."""
-        # TODO: Find way to not hardcode this.
-        operations_path = Path("operations.mojopkg")
         session = InferenceSession(
-            devices=[device],
-            custom_extensions=operations_path,
+            devices=[self.device],
         )
 
         self._model = session.load(self._graph)
