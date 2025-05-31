@@ -30,6 +30,13 @@ showcase = { cmd = "python examples/showcase.py $0"}
 click = ">=8.1.7"
 matplotlib = ">=3.9.0,<4"
 
+[feature.showcasevideo.tasks]
+showcase_video = "python examples/showcase_video.py"
+
+[feature.showcasevideo.dependencies]
+click = ">=8.1.7"
+py-opencv = ">=4.11.0,<5"
+
 [dependencies]
 max = ">=25.3.0.dev2025042905,<26"
 pillow = ">=11.0.0,<12"
@@ -39,3 +46,4 @@ default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 notebook = { features = ["notebook"], solve-group = "default" }
 showcase = { features = ["showcase"], solve-group = "default" }
+showcasevideo = { features = ["showcasevideo"], solve-group = "default" }

@@ -29,11 +29,11 @@ Apache License v2.0 with LLVM Exceptions.
 ## Technical requirements ##
 
 [MAX](https://docs.modular.com/max/) 25.3 or newer (nightly preferred). The
-command-line tool Magic will handle all dependency setup for MAX, and can be
+command-line tool `pixi` will handle all dependency setup for MAX, and can be
 installed via
 
 ```sh
-curl -ssL https://magic.modular.com | bash
+curl -fsSL https://pixi.sh/install.sh | sh
 ```
 
 - OS: Ubuntu 22.04 or newer, macOS 14.0 or newer
@@ -42,9 +42,9 @@ curl -ssL https://magic.modular.com | bash
 ## How to use ##
 
 The `max_cv` library builds on [MAX](https://docs.modular.com/max/), and the
-easiest way to install and work with MAX is through the Magic tool listed
-above. This repository contains a Magic project defined in the
-`mojoproject.toml`, and that can be built upon to add new Python applications
+easiest way to install and work with MAX is through the `pixi` tool listed
+above. This repository contains a `pixi` project defined in the
+`pixi.toml`, and that can be built upon to add new Python applications
 using `max_cv`.
 
 Within the application, import the appropriate components from MAX and
@@ -124,7 +124,7 @@ A Jupyter notebook environment is provided that can be used for
 experimentation with image processing and MAX. To activate it, run:
 
 ```sh
-magic run notebook
+pixi run notebook
 ```
 
 A [sample notebook](examples/filter_single_image.ipynb) has been provided to
@@ -139,7 +139,7 @@ and running this example is as simple as calling the following in the current
 directory:
 
 ```sh
-magic run filter-single-image
+pixi run filter-single-image
 ```
 
 A more advanced example acts as a showcase of all of the image operations in
@@ -147,14 +147,14 @@ the library, with each operation as a subcommand of the main `showcase.py`
 example. To see all available image operations, run
 
 ```sh
-magic run showcase
+pixi run showcase
 ```
 
 and as an example of how to execute a single operation and show the resulting
 image to the display:
 
 ```sh
-magic run showcase pixellate --value 15
+pixi run showcase pixellate --value 15
 ```
 
 ## Tests ##
@@ -163,7 +163,7 @@ The set of unit and integration tests for the library can be run using the
 following invocation:
 
 ```sh
-magic run test
+pixi run test
 ```
 
 ## Built-in operations ##
@@ -198,6 +198,10 @@ present. Here are the ones that are currently functional:
 
 - **pixellate**: Applies a pixellation effect on an image.
   - *pixel_width*: How large the square pixels will be in the final image.
+- **gaussian_blur**: Applies a guassian blur filter to the image.
+  - *kernel_size*: The size of the blur kernel.
+  - *sigma*: The standard deviation used for computing the kernel.
+  - *padding*: Whether to pad the input image to avoid losing pixels at the edge if the image.
 
 ### Blending ###
 
@@ -208,3 +212,11 @@ present. Here are the ones that are currently functional:
   background (0.0 - 1.0, with 0.5 as the default).
 
 - **multiply_blend**: Applies a multiply blend of two images.
+
+### Drawing ###
+
+- **draw_circle**: Draws a circle on the image.
+  - *radius*: The radius of the circle.
+  - *color*: The color of the circle as an rgb value.
+  - *width*: The thickness of the circle.
+  - *center*: The position of the center of the circle. Defaults to the center of the image.

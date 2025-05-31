@@ -9,4 +9,4 @@
 __pycache__
 .ipynb_checkpoints/
 # Output from examples
-output.png
+output.*
