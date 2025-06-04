@@ -17,11 +17,12 @@ def sobel_edge_detection(device: Device, image: TensorValue, strength: float = 1
     """
     # TODO: Support inverting colorspace.
     assert_luminance(image)
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="sobel",
         values=[
-            ops.constant(strength, dtype=DType.float32),
+            ops.constant(strength, dtype=DType.float32, device=dref),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=DeviceRef.from_device(device))],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],
     )[0].tensor

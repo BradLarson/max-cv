@@ -190,7 +190,13 @@ def draw_circle(radius, color, width, center):
 
 def run_pipeline(operations: Callable, num_inputs: int = 1):
     # Place the graph on a GPU, if available. Fall back to CPU if not.
-    device = CPU() if accelerator_count() == 0 else Accelerator()
+    device: Device
+
+    try:
+        # Unsupported accelerators will throw an error here
+        device = Accelerator()
+    except:
+        device = CPU()
 
     # Load our initial image into a device Tensor.
     image_path = Path("examples/resources/bucky_birthday_small.jpeg")
