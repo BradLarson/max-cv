@@ -3,14 +3,13 @@ from benchmarks.bench_blend import *
 from benchmarks.bench_color_correction import *
 from benchmarks.bench_draw import *
 from benchmarks.bench_edge_detection import *
+from benchmarks.common import has_accelerator
 from benchmark import Bench
+from sys import has_nvidia_gpu_accelerator, has_amd_gpu_accelerator
+from gpu.host import DeviceContext
 
 
 fn main() raises:
-    from benchmarks.common import has_accelerator
-    from sys import has_nvidia_gpu_accelerator, has_amd_gpu_accelerator
-    from gpu.host import DeviceContext
-
     print("MAX-CV Benchmarks")
     print("================")
 
