@@ -1,6 +1,6 @@
 import compiler
 from utils.index import IndexList
-from max.tensor import OutputTensor, InputTensor, foreach
+from tensor_internal import OutputTensor, InputTensor, foreach
 from runtime.asyncrt import DeviceContextPtr
 
 
@@ -44,35 +44,35 @@ struct Blend:
         blend_mode: StaticString,
         target: StaticString,
     ](
-        out: OutputTensor[type=type],
+        output: OutputTensor[dtype=type],
         intensity: Float32,
-        background_image: InputTensor[type=type, rank=out.rank],
-        foreground_image: InputTensor[type=type, rank=out.rank],
+        background_image: InputTensor[dtype=type, rank=output.rank],
+        foreground_image: InputTensor[dtype=type, rank=output.rank],
         ctx: DeviceContextPtr,
     ) raises:
-        var converted_intensity = intensity.cast[foreground_image.type]()
+        var converted_intensity = intensity.cast[foreground_image.dtype]()
 
         @parameter
         @always_inline
         fn blend[
             width: Int
         ](idx: IndexList[foreground_image.rank]) -> SIMD[
-            foreground_image.type, width
+            foreground_image.dtype, width
         ]:
             var foreground_pixel = foreground_image.load[width](idx)
             var background_pixel = background_image.load[width](idx)
 
             @parameter
             if blend_mode == "add":
-                return _add[float_dtype = foreground_image.type](
+                return _add[float_dtype = foreground_image.dtype](
                     foreground_pixel, background_pixel, converted_intensity
                 )
             elif blend_mode == "dissolve":
-                return _mix[float_dtype = foreground_image.type](
+                return _mix[float_dtype = foreground_image.dtype](
                     foreground_pixel, background_pixel, converted_intensity
                 )
             elif blend_mode == "multiply":
-                return _multiply[float_dtype = foreground_image.type](
+                return _multiply[float_dtype = foreground_image.dtype](
                     foreground_pixel, background_pixel, converted_intensity
                 )
             else:
@@ -80,6 +80,6 @@ struct Blend:
                 print("Unsupported blend mode:", blend_mode)
                 return foreground_pixel
 
-        foreach[blend, target=target](out, ctx)
+        foreach[blend, target=target](output, ctx)
 
         _ = converted_intensity

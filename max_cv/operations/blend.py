@@ -1,6 +1,6 @@
 from max.dtype import DType
 from max.graph import ops, TensorType, TensorValue, DeviceRef
-from max.driver import Device
+from max.driver import Device, CPU
 from .common import assert_rgb
 """Two-image blends."""
 
@@ -16,10 +16,12 @@ def add_blend(
     """
     assert_rgb(background_image)
     assert_rgb(foreground_image)
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="blend",
+        device=dref,
         values=[
-            ops.constant(1.0, dtype=DType.float32, device=DeviceRef.from_device(device)),
+            ops.constant(1.0, dtype=DType.float32, device=DeviceRef.from_device(CPU())),
             background_image,
             foreground_image
         ],
@@ -27,7 +29,7 @@ def add_blend(
             TensorType(
                 dtype=background_image.dtype,
                 shape=background_image.shape,
-                device=DeviceRef.from_device(device))
+                device=dref)
         ],
         parameters={
             "blend_mode": "add"
@@ -53,10 +55,12 @@ def dissolve_blend(
     """
     assert_rgb(background_image)
     assert_rgb(foreground_image)
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="blend",
+        device=dref,
         values=[
-            ops.constant(intensity, dtype=DType.float32),
+            ops.constant(intensity, dtype=DType.float32, device=DeviceRef.from_device(CPU())),
             background_image,
             foreground_image
         ],
@@ -64,7 +68,7 @@ def dissolve_blend(
             TensorType(
                 dtype=background_image.dtype,
                 shape=background_image.shape,
-                device=DeviceRef.from_device(device))
+                device=dref)
         ],
         parameters={
             "blend_mode": "dissolve"
@@ -84,10 +88,12 @@ def multiply_blend(
     """
     assert_rgb(background_image)
     assert_rgb(foreground_image)
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="blend",
+        device=dref,
         values=[
-            ops.constant(1.0, dtype=DType.float32),
+            ops.constant(1.0, dtype=DType.float32, device=DeviceRef.from_device(CPU())),
             background_image,
             foreground_image
         ],
@@ -95,7 +101,7 @@ def multiply_blend(
             TensorType(
                 dtype=background_image.dtype,
                 shape=background_image.shape,
-                device=DeviceRef.from_device(device))
+                device=dref)
         ],
         parameters={
             "blend_mode": "multiply"
