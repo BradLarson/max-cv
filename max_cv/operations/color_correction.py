@@ -1,6 +1,6 @@
 from max.dtype import DType
 from max.graph import ops, Shape, TensorType, TensorValue, DeviceRef
-from max.driver import Device
+from max.driver import Device, CPU
 from .common import assert_luminance, assert_rgb
 """Color correction operations."""
 
@@ -17,13 +17,15 @@ def brightness(device: Device, image: TensorValue, brightness: float) -> TensorV
     """
     assert_rgb(image)
     # The custom ops way.
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="brightness",
+        device=dref,
         values=[
-            ops.constant(brightness, dtype=DType.float32, device=DeviceRef.from_device(device)),
+            ops.constant(brightness, dtype=DType.float32, device=DeviceRef.from_device(CPU())),
             image
         ],
-        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=DeviceRef.from_device(device))],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],
     )[0].tensor
 
     # The simple way
@@ -45,8 +47,9 @@ def gamma(device: Device, image: TensorValue, gamma: float) -> TensorValue:
     # The custom ops way.
     return ops.custom(
         name="gamma",
+        device=dref,
         values=[
-            ops.constant(gamma, dtype=DType.float32, device=dref),
+            ops.constant(gamma, dtype=DType.float32, device=DeviceRef.from_device(CPU())),
             image
         ],
         out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],
@@ -86,10 +89,12 @@ def rgb_to_luminance(device: Device, image: TensorValue) -> TensorValue:
     image_dims[-1] = 1
     luminance_shape = Shape(image_dims)
 
+    dref = DeviceRef.from_device(device)
     return ops.custom(
         name="luminance",
+        device=dref,
         values=[image],
-        out_types=[TensorType(dtype=image.dtype, shape=luminance_shape, device=DeviceRef.from_device(device))],
+        out_types=[TensorType(dtype=image.dtype, shape=luminance_shape, device=dref)],
     )[0].tensor
 
 def luminance_to_rgb(image: TensorValue) -> TensorValue:

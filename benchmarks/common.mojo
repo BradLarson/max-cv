@@ -2,29 +2,33 @@ from math import iota
 from max.driver import cpu
 from buffer.dimlist import DimList
 from gpu.host import DeviceContext, DeviceBuffer
-from max.tensor import (
-    ManagedTensorSlice,
-    StaticTensorSpec,
-    IOSpec,
-    Input
-)
+from tensor_internal import ManagedTensorSlice, StaticTensorSpec, IOSpec, Input
 from memory import AddressSpace
 from memory import UnsafePointer
 from random import rand
 from utils import IndexList
-from sys import sizeof
+from sys import sizeof, has_accelerator
 
 alias dtype = DType.float32
 alias rank = 3
-alias tspec = _static_spec[dtype, rank](shape=(600, 400, 3), strides=(400, 3, 1))
+alias tspec = _static_spec[dtype, rank](
+    shape=(600, 400, 3), strides=(400, 3, 1)
+)
 alias point_spec = _static_spec[dtype, 1](shape=(2,), strides=(1,))
 alias color_spec = _static_spec[dtype, 1](shape=(3,), strides=(1,))
 
-fn gen_tensor[iospec: IOSpec](ctx: DeviceContext) raises -> BenchTensor[iospec, tspec]:
+
+fn gen_tensor[
+    iospec: IOSpec
+](ctx: DeviceContext) raises -> BenchTensor[iospec, tspec]:
     return BenchTensor[iospec, tspec](ctx).rand()
 
-fn gen_color_tensor(ctx: DeviceContext) raises -> BenchTensor[Input, color_spec]:
+
+fn gen_color_tensor(
+    ctx: DeviceContext,
+) raises -> BenchTensor[Input, color_spec]:
     return BenchTensor[Input, color_spec](ctx).rand()
+
 
 fn _static_spec[
     dtype: DType, rank: Int
@@ -40,13 +44,14 @@ fn _static_spec[
         out_compute_lambda=None,
     )
 
-@value
+
+@fieldwise_init
 struct BenchTensor[
     dtype: DType,
     rank: Int, //,
     io_spec: IOSpec,
     static_spec: StaticTensorSpec[dtype, rank],
-]:
+](Copyable, Movable):
     alias tensor_type = ManagedTensorSlice[
         io_spec=io_spec, static_spec=static_spec
     ]

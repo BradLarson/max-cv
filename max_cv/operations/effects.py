@@ -1,6 +1,6 @@
 from max.dtype import DType
 from max.graph import ops, TensorType, TensorValue, DeviceRef
-from max.driver import Device
+from max.driver import Device, CPU
 from .common import assert_rgb
 import numpy as np
 """Stylized image effects."""
@@ -20,8 +20,9 @@ def pixellate(device: Device, image: TensorValue, pixel_width: int) -> TensorVal
     dref = DeviceRef.from_device(device)
     return ops.custom(
         name="pixellate",
+        device=dref,
         values=[
-            ops.constant(pixel_width, dtype=DType.int32, device=dref),
+            ops.constant(pixel_width, dtype=DType.int32, device=DeviceRef.from_device(CPU())),
             image
         ],
         out_types=[TensorType(

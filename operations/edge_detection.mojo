@@ -2,14 +2,14 @@ import compiler
 from builtin.simd import _pow
 from math import sqrt
 from utils.index import IndexList
-from max.tensor import foreach, OutputTensor, InputTensor
+from tensor_internal import foreach, OutputTensor, InputTensor
 from runtime.asyncrt import DeviceContextPtr
 
 
 # FIXME: This makes a lot of assumptions about the inbound tensor.
 fn edge_clamped_offset_load[
     width: Int, _rank: Int, type: DType, height_offset: Int, width_offset: Int
-](tensor: InputTensor[type=type, rank=_rank], index: IndexList[_rank]) -> SIMD[
+](tensor: InputTensor[dtype=type, rank=_rank], index: IndexList[_rank]) -> SIMD[
     type, width
 ]:
     var clamped_index = index
@@ -28,16 +28,16 @@ struct SobelEdgeDetection:
     fn execute[
         target: StaticString,
     ](
-        out: OutputTensor,
+        output: OutputTensor,
         strength: Float32,
-        image: InputTensor[type=out.type, rank=out.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter
         @always_inline
         fn sobel[
             width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.type, width]:
+        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
             var top_left = edge_clamped_offset_load[
                 1, height_offset= -1, width_offset= -1
             ](image, idx)
@@ -62,9 +62,23 @@ struct SobelEdgeDetection:
             var bottom_right = edge_clamped_offset_load[
                 1, height_offset=1, width_offset=1
             ](image, idx)
-            var h = -top_left - 2.0 * top - top_right + bottom_left + 2.0 * bottom + bottom_right
-            var v = -bottom_left - 2.0 * left - top_left + bottom_right + 2.0 * right + top_right
+            var h = (
+                -top_left
+                - 2.0 * top
+                - top_right
+                + bottom_left
+                + 2.0 * bottom
+                + bottom_right
+            )
+            var v = (
+                -bottom_left
+                - 2.0 * left
+                - top_left
+                + bottom_right
+                + 2.0 * right
+                + top_right
+            )
             var magnitude = sqrt(h * h + v * v)
-            return magnitude * strength.cast[image.type]()
+            return magnitude * strength.cast[image.dtype]()
 
-        foreach[sobel, target=target](out, ctx)
+        foreach[sobel, target=target](output, ctx)

@@ -28,7 +28,7 @@ Apache License v2.0 with LLVM Exceptions.
 
 ## Technical requirements ##
 
-[MAX](https://docs.modular.com/max/) 25.3 or newer (nightly preferred). The
+[MAX](https://docs.modular.com/max/) 25.4 or newer (nightly preferred). The
 command-line tool `pixi` will handle all dependency setup for MAX, and can be
 installed via
 
@@ -37,7 +37,8 @@ curl -fsSL https://pixi.sh/install.sh | sh
 ```
 
 - OS: Ubuntu 22.04 or newer, macOS 14.0 or newer
-- NVIDIA GPU: Ampere or newer architecture
+- NVIDIA GPU: Turing or newer architectures
+- AMD GPU: RDNA3+ or CDNA3 architectures
 
 ## How to use ##
 
