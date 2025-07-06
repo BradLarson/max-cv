@@ -12,6 +12,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "pillow>=11.0.0,<12",
+        "max>=25.4,<25.5",
     ],
     extras_require={
         "test": ["pytest>=8.3.2,<9"],
