@@ -17,7 +17,7 @@ test = { cmd = "pytest"}
 pytest = ">=8.3.2, <9"
 
 [feature.notebook.tasks]
-notebook = { cmd = "cp operations.mojopkg examples/ && jupyter notebook"}
+notebook = "jupyter notebook"
 
 [feature.notebook.dependencies]
 matplotlib = ">=3.9.0,<4"
