@@ -1,5 +1,6 @@
 import click
 from collections.abc import Callable
+from matplotlib import pyplot as plt
 from pathlib import Path
 from PIL import Image
 
@@ -9,12 +10,11 @@ import sys
 path_root = Path(__file__).parent.parent
 sys.path.append(str(path_root))
 
-from matplotlib import pyplot as plt
-from max_cv import ImagePipeline, load_image_into_tensor
-from max_cv import operations as ops
-from max.driver import Accelerator, CPU, Device
-from max.dtype import DType
-from max.graph import TensorValue
+from max_cv import ImagePipeline, load_image_into_tensor # noqa: E402
+from max_cv import operations as ops # noqa: E402
+from max.driver import Accelerator, CPU, Device # noqa: E402
+from max.dtype import DType # noqa: E402
+from max.graph import TensorValue # noqa: E402
 
 
 @click.group()
@@ -163,7 +163,7 @@ def dissolve_blend(intensity):
 
 
 @showcase.command(name="multiply_blend")
-def add_blend():
+def multiply_blend():
     print("Applying multiply blend on two images.")
     run_pipeline(
         operations=lambda device, inputs: ops.multiply_blend(
@@ -217,7 +217,7 @@ def run_pipeline(operations: Callable, num_inputs: int = 1):
     try:
         # Unsupported accelerators will throw an error here
         device = Accelerator()
-    except:
+    except ValueError:
         device = CPU()
 
     # Load our initial image into a device Tensor.
