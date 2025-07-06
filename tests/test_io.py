@@ -1,7 +1,7 @@
 from max.driver import CPU
 from max.dtype import DType
 from max.engine import InferenceSession
-from max.graph import Graph, TensorType, DeviceRef
+from max.graph import TensorType, DeviceRef
 from max_cv import load_image_into_tensor, normalize_image, restore_image
 from pathlib import Path
 from .common import generate_test_tensor, run_graph, make_graph

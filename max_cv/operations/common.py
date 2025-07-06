@@ -1,4 +1,4 @@
-from max.graph import Dim, TensorValue
+from max.graph import TensorValue
 
 """Shared helper functions for operations."""
 

@@ -12,7 +12,7 @@ sys.path.append(str(path_root))
 from matplotlib import pyplot as plt
 from max_cv import ImagePipeline, load_image_into_tensor
 from max_cv import operations as ops
-from max.driver import Accelerator, accelerator_count, CPU, Device
+from max.driver import Accelerator, CPU, Device
 from max.dtype import DType
 from max.graph import TensorValue
 
