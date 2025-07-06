@@ -3,13 +3,14 @@ from PIL import Image
 
 # Add search path for the max_cv module.
 import sys
+
 path_root = Path(__file__).parent.parent
 sys.path.append(str(path_root))
 
-from max_cv import ImagePipeline, load_image_into_tensor
-from max_cv import operations as ops
-from max.driver import Accelerator, accelerator_count, CPU
-from max.dtype import DType
+from max_cv import ImagePipeline, load_image_into_tensor  # noqa: E402
+from max_cv import operations as ops  # noqa: E402
+from max.driver import Accelerator, accelerator_count, CPU  # noqa: E402
+from max.dtype import DType  # noqa: E402
 
 
 if __name__ == "__main__":
@@ -27,7 +28,7 @@ if __name__ == "__main__":
         "filter_single_image",
         image_tensor.shape,
         pipeline_dtype=DType.float32,
-        device=device
+        device=device,
     ) as pipeline:
         processed_image = ops.pixellate(device, pipeline.input_image, pixel_width=20)
         pipeline.output(processed_image)

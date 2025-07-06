@@ -1,6 +1,7 @@
-from max.graph import Dim, TensorValue
+from max.graph import TensorValue
 
 """Shared helper functions for operations."""
+
 
 def assert_rgb(image: TensorValue):
     """Tests that an image has RGB channels.
@@ -13,7 +14,10 @@ def assert_rgb(image: TensorValue):
     """
     channels = image.shape.static_dims[-1]
     if channels != 3:
-        raise ValueError(f"expected an RGB image, instead has only {channels} channel(s)")
+        raise ValueError(
+            f"expected an RGB image, instead has only {channels} channel(s)"
+        )
+
 
 def assert_luminance(image: TensorValue):
     """Tests that an image has only a luminance channel.
@@ -26,4 +30,6 @@ def assert_luminance(image: TensorValue):
     """
     channels = image.shape.static_dims[-1]
     if channels != 1:
-        raise ValueError(f"expected a luminance-only image, instead has {channels} channels")
+        raise ValueError(
+            f"expected a luminance-only image, instead has {channels} channels"
+        )

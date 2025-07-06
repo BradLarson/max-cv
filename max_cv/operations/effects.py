@@ -3,6 +3,7 @@ from max.graph import ops, TensorType, TensorValue, DeviceRef
 from max.driver import Device, CPU
 from .common import assert_rgb
 import numpy as np
+
 """Stylized image effects."""
 
 
@@ -22,16 +23,22 @@ def pixellate(device: Device, image: TensorValue, pixel_width: int) -> TensorVal
         name="pixellate",
         device=dref,
         values=[
-            ops.constant(pixel_width, dtype=DType.int32, device=DeviceRef.from_device(CPU())),
-            image
+            ops.constant(
+                pixel_width, dtype=DType.int32, device=DeviceRef.from_device(CPU())
+            ),
+            image,
         ],
-        out_types=[TensorType(
-            dtype=image.dtype,
-            shape=image.shape,
-            device=dref)],
+        out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],
     )[0].tensor
 
-def gaussian_blur(device: Device, image: TensorValue, kernel_size: int=3, sigma: float=1., padding: bool=False) -> TensorValue:
+
+def gaussian_blur(
+    device: Device,
+    image: TensorValue,
+    kernel_size: int = 3,
+    sigma: float = 1.0,
+    padding: bool = False,
+) -> TensorValue:
     """Apply a gaussian blur affect to the image.
 
     Args:
@@ -39,7 +46,7 @@ def gaussian_blur(device: Device, image: TensorValue, kernel_size: int=3, sigma:
         kernel_size: The size of the blur kernel to be applied.
         sigma: Standard deviation used for computing the kernel.
         padding: Whether to pad the input image to avoid losing pixels at the edge if the image.
-    
+
     Returns:
         A value representing the blurred image.
     """
@@ -47,16 +54,16 @@ def gaussian_blur(device: Device, image: TensorValue, kernel_size: int=3, sigma:
     N = kernel_size
 
     # generate the kernel
-    ax = np.linspace(-(N - 1) / 2., (N - 1) / 2., N)
+    ax = np.linspace(-(N - 1) / 2.0, (N - 1) / 2.0, N)
     gauss = np.exp(-0.5 * np.square(ax) / np.square(sigma))
     kernel = np.outer(gauss, gauss)
-    arr =  (kernel / np.sum(kernel))
+    arr = kernel / np.sum(kernel)
 
     # reshape the expected RSCF layout
     kernel = ops.constant(arr, dtype=image.dtype, device=DeviceRef.from_device(device))
     kernel = kernel.reshape((N, N, 1, 1))
     kernel = kernel.broadcast_to((N, N, 1, 3))
-    
+
     pad_value = (N // 2) if padding else 0
 
     return ops.conv2d(
@@ -64,5 +71,5 @@ def gaussian_blur(device: Device, image: TensorValue, kernel_size: int=3, sigma:
         image.reshape([1] + image.shape.static_dims),
         kernel,
         groups=3,
-        padding=[pad_value] * 4
+        padding=[pad_value] * 4,
     )[0].tensor

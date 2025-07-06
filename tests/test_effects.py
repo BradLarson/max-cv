@@ -2,7 +2,7 @@ import numpy as np
 from max.driver import CPU
 from max.dtype import DType
 from max.engine import InferenceSession
-from max.graph import Graph, TensorType, DeviceRef
+from max.graph import TensorType, DeviceRef
 import max_cv.operations as ops
 from .common import generate_test_tensor, run_graph, make_graph
 
@@ -29,7 +29,6 @@ def test_pixellate(session: InferenceSession) -> None:
     assert result.shape == (100, 100, 3)
 
     # Verify pixellation creates block patterns
-    input_values = image_tensor.to_numpy()
     output_values = result.to_numpy()
 
     # Verify output values are in valid range

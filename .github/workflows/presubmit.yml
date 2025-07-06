@@ -1,0 +1,40 @@
+name: Presubmit Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install ruff
+      run: pip install ruff
+    
+    - name: Run ruff linting
+      run: ruff check .
+    
+    - name: Run ruff formatting check
+      run: ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Pixi
+      uses: prefix-dev/setup-pixi@v0.8.10
+      with:
+        pixi-version: v0.47.0
+    
+    - name: Run tests
+      run: pixi run test
