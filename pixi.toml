@@ -38,7 +38,7 @@ click = ">=8.1.7"
 py-opencv = ">=4.11.0,<5"
 
 [dependencies]
-max = ">=25.3.0.dev2025042905,<26"
+max = "==25.4"
 pillow = ">=11.0.0,<12"
 
 [environments]
