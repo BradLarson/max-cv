@@ -5,6 +5,7 @@ from pathlib import Path
 from platform import system
 
 import sys
+
 path_root = Path(__file__).parent.parent
 sys.path.append(str(path_root))
 
@@ -19,6 +20,7 @@ from max.graph import TensorValue
 def showcase_video():
     pass
 
+
 @showcase_video.command(name="sobel")
 @click.option(
     "--value",
@@ -27,10 +29,7 @@ def showcase_video():
     show_default=True,
     help="Edge strength.",
 )
-@click.option(
-    "--camera",
-    is_flag=True
-)
+@click.option("--camera", is_flag=True)
 @click.option(
     "--file",
     type=str,
@@ -41,10 +40,12 @@ def sobel(value, camera, file):
     def edge_detection(device: Device, input: TensorValue) -> TensorValue:
         processed_image = ops.rgb_to_luminance(device, input)
         return ops.sobel_edge_detection(device, processed_image, strength=1.0)
+
     if camera:
         run_pipeline_live_video(operations=edge_detection)
     else:
         run_pipeline_video_file(operations=edge_detection, path=file)
+
 
 def create_pipeline(operations: Callable, sample_frame: Tensor) -> ImagePipeline:
     # Place the graph on a GPU, if available. Fall back to CPU if not.
@@ -61,7 +62,7 @@ def create_pipeline(operations: Callable, sample_frame: Tensor) -> ImagePipeline
         sample_frame.shape,
         pipeline_dtype=DType.float32,
         device=device,
-        num_inputs=1
+        num_inputs=1,
     ) as pipeline:
         processed_image = operations(device, pipeline.input_image)
         pipeline.output(processed_image)
@@ -82,13 +83,15 @@ def run_pipeline_video_file(operations: Callable, path: str):
     ret, frame = cap.read()
     pipeline = create_pipeline(operations, Tensor.from_numpy(frame))
 
-    width  = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+    width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv.CAP_PROP_FPS)
 
-    is_mac = system() == 'Darwin'
-    fourcc = cv.VideoWriter_fourcc(*('mp4v' if is_mac else 'XVID'))
-    out = cv.VideoWriter(f'output.{"mov" if is_mac else "avi"}', fourcc, fps, (width,  height))
+    is_mac = system() == "Darwin"
+    fourcc = cv.VideoWriter_fourcc(*("mp4v" if is_mac else "XVID"))
+    out = cv.VideoWriter(
+        f"output.{'mov' if is_mac else 'avi'}", fourcc, fps, (width, height)
+    )
 
     while ret:
         tensor = Tensor.from_numpy(frame)
@@ -96,10 +99,11 @@ def run_pipeline_video_file(operations: Callable, path: str):
         result = result.to(CPU())
         out.write(result.to_numpy())
 
-        ret, frame = cap.read()    
-    
+        ret, frame = cap.read()
+
     cap.release()
     out.release()
+
 
 def run_pipeline_live_video(operations: Callable):
     cap = cv.VideoCapture(0)
@@ -123,12 +127,13 @@ def run_pipeline_live_video(operations: Callable):
         result = pipeline(tensor)
         result = result.to(CPU())
 
-        cv.imshow('frame', result.to_numpy())
-        if cv.waitKey(1) == ord('q'):
+        cv.imshow("frame", result.to_numpy())
+        if cv.waitKey(1) == ord("q"):
             break
-    
+
     cap.release()
     cv.destroyAllWindows()
+
 
 if __name__ == "__main__":
     showcase_video()

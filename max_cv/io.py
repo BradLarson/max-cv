@@ -5,13 +5,14 @@ from max.graph import ops, TensorValue
 from pathlib import Path
 from PIL import Image
 from .operations import luminance_to_rgb
+
 """Common I/O functionality for loading, saving, and processing images."""
 
 
 def load_image_into_tensor(path: Path, device: Device = CPU()) -> Tensor:
     """Loads an image from the provided path into a MAX driver Tensor, and
     moves that Tensor onto a device if needed.
-    
+
     Args:
         path: The location of the image to load.
         device: An optional device to move the tensor onto. If unspecified,
@@ -30,7 +31,7 @@ def normalize_image(image: TensorValue, dtype: DType) -> TensorValue:
     """Normalizes an image tensor to a 0.0 - 1.0 color range by first
     converting it into the provided floating-point datatype and then dividing
     the color channels by 255.
-    
+
     Args:
         image: A graph TensorValue representing an input image.
         dtype: The floating-point datatype to be used in the internal graph.
@@ -47,7 +48,7 @@ def restore_image(tensor: TensorValue, clamp: bool = True) -> TensorValue:
     the image to a 0-255 colorspace and places it back in a UInt8 format. If
     the inbound image is luminance-only, it is converted back to RGB
     colorspace.
-    
+
     Args:
         tensor: A value representing the end result of the image pipeline.
         clamp: Whether to clamp the incoming color channels to a 0.0 - 1.0

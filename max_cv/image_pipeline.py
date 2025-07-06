@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List
 from .io import normalize_image, restore_image
 
+
 class ImagePipeline:
     name: str
     _pipeline_dtype: DType
@@ -23,20 +24,23 @@ class ImagePipeline:
         shape: Shape,
         pipeline_dtype: DType,
         device: Device,
-        num_inputs: int = 1
+        num_inputs: int = 1,
     ):
         self.name = name
         self._shape = shape
         self._pipeline_dtype = pipeline_dtype
         self.device = device
         input_types = [
-            TensorType(DType.uint8, shape=self._shape, device=DeviceRef.from_device(device)) for _ in range(num_inputs)
+            TensorType(
+                DType.uint8, shape=self._shape, device=DeviceRef.from_device(device)
+            )
+            for _ in range(num_inputs)
         ]
         self._graph = Graph(
             self.name,
             input_types=input_types,
             # TODO: Find a way to not hardcode this
-            custom_extensions=[Path(__file__).parent / '..' / "operations"]
+            custom_extensions=[Path(__file__).parent / ".." / "operations"],
         )
 
     def __enter__(self):
@@ -65,7 +69,7 @@ class ImagePipeline:
         )
 
         self._model = session.load(self._graph)
-    
+
     def __call__(self, *images: Tensor) -> Tensor:
         # TODO: Assert that the image tensor resides on the same device.
         return self._model.execute(*images)[0]
