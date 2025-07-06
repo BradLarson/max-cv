@@ -10,11 +10,11 @@ import sys
 path_root = Path(__file__).parent.parent
 sys.path.append(str(path_root))
 
-from max_cv import ImagePipeline, load_image_into_tensor # noqa: E402
-from max_cv import operations as ops # noqa: E402
-from max.driver import Accelerator, CPU, Device # noqa: E402
-from max.dtype import DType # noqa: E402
-from max.graph import TensorValue # noqa: E402
+from max_cv import ImagePipeline, load_image_into_tensor  # noqa: E402
+from max_cv import operations as ops  # noqa: E402
+from max.driver import Accelerator, CPU, Device  # noqa: E402
+from max.dtype import DType  # noqa: E402
+from max.graph import TensorValue  # noqa: E402
 
 
 @click.group()
