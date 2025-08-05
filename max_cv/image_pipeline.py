@@ -40,7 +40,7 @@ class ImagePipeline:
             self.name,
             input_types=input_types,
             # TODO: Find a way to not hardcode this
-            custom_extensions=[Path(__file__).parent / ".." / "operations"],
+            custom_extensions=[Path(__file__).parent / "operations_mojo"],
         )
 
     def __enter__(self):

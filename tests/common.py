@@ -87,5 +87,5 @@ def make_graph(name, **kwargs) -> Graph:
     return Graph(
         name,
         **kwargs,
-        custom_extensions=[Path(__file__).parent / ".." / "operations"],
+        custom_extensions=[Path(__file__).parent / ".." / "max_cv" / "operations_mojo"],
     )
