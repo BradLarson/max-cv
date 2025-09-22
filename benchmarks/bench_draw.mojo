@@ -1,5 +1,5 @@
 from benchmark import ThroughputMeasure, BenchId, BenchMetric, Bench, Bencher
-from operations import DrawCircle
+from operations_mojo import DrawCircle
 from .common import *
 from tensor_internal import (
     Input,
