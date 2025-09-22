@@ -1,5 +1,5 @@
 from benchmark import ThroughputMeasure, BenchId, BenchMetric, Bench, Bencher
-from operations import Pixellate
+from operations_mojo import Pixellate
 from .common import *
 from tensor_internal import (
     Input,

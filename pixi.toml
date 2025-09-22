@@ -8,7 +8,7 @@ version = "0.1.0"
 
 [tasks]
 filter-single-image = { cmd="python examples/filter_single_image.py" }
-bench = { cmd = "mojo ./benchmarks/bench.mojo"}
+bench = { cmd = "mojo -I max_cv/ ./benchmarks/bench.mojo"}
 
 [feature.test.tasks]
 test = { cmd = "pytest"}

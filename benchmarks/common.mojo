@@ -12,10 +12,10 @@ from sys import sizeof, has_accelerator
 alias dtype = DType.float32
 alias rank = 3
 alias tspec = _static_spec[dtype, rank](
-    shape=(600, 400, 3), strides=(400, 3, 1)
+    shape=DimList(600, 400, 3), strides=DimList(400, 3, 1)
 )
-alias point_spec = _static_spec[dtype, 1](shape=(2,), strides=(1,))
-alias color_spec = _static_spec[dtype, 1](shape=(3,), strides=(1,))
+alias point_spec = _static_spec[dtype, 1](shape=DimList(2), strides=DimList(1))
+alias color_spec = _static_spec[dtype, 1](shape=DimList(3), strides=DimList(1))
 
 
 fn gen_tensor[
