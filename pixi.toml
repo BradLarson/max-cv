@@ -37,9 +37,17 @@ showcase_video = "python examples/showcase_video.py"
 click = ">=8.1.7"
 py-opencv = ">=4.11.0,<5"
 
+[feature.format.tasks]
+format = { cmd = "ruff format", depends-on=["format_mojo"] }
+format_mojo = "mojo format max_cv/operations_mojo benchmarks -l 80"
+
+[feature.format.dependencies]
+ruff = ">=0.14.0,<0.15"
+mojo = ">=0.25.7.0.dev2025101405,<0.26"
+
 [dependencies]
-max = ">=25.3.0.dev2025042905,<26"
 pillow = ">=11.0.0,<12"
+max = ">=25.7.0.dev2025101405,<26"
 
 [environments]
 default = { solve-group = "default" }
@@ -47,3 +55,4 @@ test = { features = ["test"], solve-group = "default" }
 notebook = { features = ["notebook"], solve-group = "default" }
 showcase = { features = ["showcase"], solve-group = "default" }
 showcasevideo = { features = ["showcasevideo"], solve-group = "default" }
+format = { features = ["format"], solve-group = "default" }

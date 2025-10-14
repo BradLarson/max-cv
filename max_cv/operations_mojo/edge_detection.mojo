@@ -2,7 +2,7 @@ import compiler
 from builtin.simd import _pow
 from math import sqrt
 from utils.index import IndexList
-from tensor_internal import foreach, OutputTensor, InputTensor
+from tensor import foreach, OutputTensor, InputTensor
 from runtime.asyncrt import DeviceContextPtr
 
 

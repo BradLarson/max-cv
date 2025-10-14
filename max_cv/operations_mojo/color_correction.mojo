@@ -1,7 +1,7 @@
 import compiler
 from builtin.simd import _pow
 from utils.index import IndexList
-from tensor_internal import OutputTensor, InputTensor, foreach
+from tensor import OutputTensor, InputTensor, foreach
 from runtime.asyncrt import DeviceContextPtr
 
 

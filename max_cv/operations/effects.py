@@ -60,7 +60,11 @@ def gaussian_blur(
     arr = kernel / np.sum(kernel)
 
     # reshape the expected RSCF layout
-    kernel = ops.constant(arr, dtype=image.dtype, device=DeviceRef.from_device(device))
+    kernel = ops.constant(
+        arr.astype(dtype=np.float32, casting="unsafe", copy=True),
+        dtype=image.dtype,
+        device=DeviceRef.from_device(device),
+    )
     kernel = kernel.reshape((N, N, 1, 1))
     kernel = kernel.broadcast_to((N, N, 1, 3))
 
