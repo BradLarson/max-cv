@@ -46,7 +46,9 @@ fn blend(mut bench: Bench) raises:
 
         @parameter
         if (
-            has_accelerator() and mode != "dissolve"
+            has_accelerator()
+            and not CompilationTarget.is_macos()
+            and mode != "dissolve"
         ):  # dissolve has GPU memory issues
             var gpu = DeviceContext()
             var gpu_background_image = gen_tensor[Input](gpu)

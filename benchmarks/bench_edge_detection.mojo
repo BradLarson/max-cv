@@ -33,7 +33,7 @@ fn sobel(mut bench: Bench) raises:
     bench.bench_function[bench_cpu](BenchId("sobel", "cpu"), elements)
 
     @parameter
-    if has_accelerator():
+    if has_accelerator() and not CompilationTarget.is_macos():
         var gpu = DeviceContext()
         var gpu_intensor = gen_tensor[Input](gpu)
         var gpu_outtensor = gen_tensor[Output](gpu)

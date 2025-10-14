@@ -34,7 +34,7 @@ fn brightness(mut bench: Bench) raises:
     bench.bench_function[bench_cpu](BenchId("brightness", "cpu"), elements)
 
     @parameter
-    if has_accelerator():
+    if has_accelerator() and not CompilationTarget.is_macos():
         var gpu = DeviceContext()
         var gpu_outtensor = gen_tensor[Output](gpu)
         var gpu_intensor = gen_tensor[Input](gpu)
@@ -72,7 +72,7 @@ fn gamma(mut bench: Bench) raises:
     bench.bench_function[bench_cpu](BenchId("gamma", "cpu"), elements)
 
     @parameter
-    if has_accelerator():
+    if has_accelerator() and not CompilationTarget.is_macos():
         var gpu = DeviceContext()
         var gpu_outtensor = gen_tensor[Output](gpu)
         var gpu_intensor = gen_tensor[Input](gpu)
@@ -110,7 +110,7 @@ fn luminance(mut bench: Bench) raises:
     bench.bench_function[bench_cpu](BenchId("luminance", "cpu"), elements)
 
     @parameter
-    if has_accelerator():
+    if has_accelerator() and not CompilationTarget.is_macos():
         var gpu = DeviceContext()
         var gpu_outtensor = gen_tensor[Output](gpu)
         var gpu_intensor = gen_tensor[Input](gpu)

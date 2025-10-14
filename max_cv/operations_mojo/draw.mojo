@@ -25,11 +25,14 @@ struct DrawCircle:
         var outer_dist = radius + width
 
         if color.size() != 3:
-            raise "Expected 3 channel color, received: " + String(color.size())
+            raise Error(
+                "Expected 3 channel color, received: " + String(color.size())
+            )
 
         if center.size() != 2:
-            raise "Expected 2 dimensional center point, received: " + String(
-                center.size()
+            raise Error(
+                "Expected 2 dimensional center point, received: "
+                + String(center.size())
             )
 
         # TODO: There's definitely a more clever way of doing this

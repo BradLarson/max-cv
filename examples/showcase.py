@@ -3,6 +3,7 @@ from collections.abc import Callable
 from matplotlib import pyplot as plt
 from pathlib import Path
 from PIL import Image
+import platform
 
 # Add search path for the max_cv module.
 import sys
@@ -216,7 +217,7 @@ def run_pipeline(operations: Callable, num_inputs: int = 1):
 
     try:
         # Unsupported accelerators will throw an error here
-        device = Accelerator()
+        device = Accelerator() if platform.system() != "Darwin" else CPU()
     except ValueError:
         device = CPU()
 
