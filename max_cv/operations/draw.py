@@ -34,18 +34,20 @@ def draw_circle(
         values=[
             image,
             ops.constant(
-                radius, dtype=DType.float32, device=DeviceRef.from_device(CPU())
+                float(radius), dtype=DType.float32, device=DeviceRef.from_device(CPU())
             ),
             ops.constant(
-                np.array(color) / 255.0,
+                np.array(color, dtype=np.float32) / 255.0,
                 dtype=DType.float32,
                 device=DeviceRef.from_device(CPU()),
             ),
             ops.constant(
-                width, dtype=DType.float32, device=DeviceRef.from_device(CPU())
+                float(width), dtype=DType.float32, device=DeviceRef.from_device(CPU())
             ),
             ops.constant(
-                np.array(c), dtype=DType.float32, device=DeviceRef.from_device(CPU())
+                np.array(c, np.float32),
+                dtype=DType.float32,
+                device=DeviceRef.from_device(CPU()),
             ),
         ],
         out_types=[TensorType(dtype=image.dtype, shape=image.shape, device=dref)],

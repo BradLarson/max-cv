@@ -38,4 +38,4 @@ struct Passthrough:
     fn shape(
         x: InputTensor,
     ) raises -> IndexList[x.rank]:
-        raise "NotImplemented"
+        raise Error("NotImplemented")
