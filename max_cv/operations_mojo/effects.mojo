@@ -1,6 +1,6 @@
 import compiler
 from utils.index import Index, IndexList
-from tensor_internal import foreach, OutputTensor, InputTensor
+from tensor import foreach, OutputTensor, InputTensor
 from runtime.asyncrt import DeviceContextPtr
 
 

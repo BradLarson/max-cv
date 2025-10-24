@@ -1,6 +1,6 @@
 import compiler
 from utils.index import IndexList
-from tensor_internal import OutputTensor, InputTensor, foreach
+from tensor import OutputTensor, InputTensor, foreach
 from runtime.asyncrt import DeviceContextPtr
 
 
@@ -46,8 +46,8 @@ struct Blend:
     ](
         output: OutputTensor[dtype=type],
         intensity: Float32,
-        background_image: InputTensor[dtype=type, rank=output.rank],
-        foreground_image: InputTensor[dtype=type, rank=output.rank],
+        background_image: InputTensor[dtype=type, rank = output.rank],
+        foreground_image: InputTensor[dtype=type, rank = output.rank],
         ctx: DeviceContextPtr,
     ) raises:
         var converted_intensity = intensity.cast[foreground_image.dtype]()

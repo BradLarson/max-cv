@@ -2,12 +2,12 @@ from math import iota
 from max.driver import cpu
 from buffer.dimlist import DimList
 from gpu.host import DeviceContext, DeviceBuffer
-from tensor_internal import ManagedTensorSlice, StaticTensorSpec, IOSpec, Input
+from tensor import ManagedTensorSlice, StaticTensorSpec, IOSpec, Input
 from memory import AddressSpace
 from memory import UnsafePointer
 from random import rand
 from utils import IndexList
-from sys import sizeof, has_accelerator
+from sys import size_of, has_accelerator, CompilationTarget
 
 alias dtype = DType.float32
 alias rank = 3
@@ -33,9 +33,9 @@ fn gen_color_tensor(
 fn _static_spec[
     dtype: DType, rank: Int
 ](shape: DimList, strides: DimList, out spec: StaticTensorSpec[dtype, rank]):
-    spec = __type_of(spec)(
+    spec = type_of(spec)(
         shape=shape,
-        alignment=sizeof[dtype](),
+        alignment=size_of[dtype](),
         strides=strides,
         address_space=AddressSpace.GENERIC,
         exclusive=True,
@@ -79,9 +79,9 @@ struct BenchTensor[
     fn rand(self) raises -> Self:
         with self.buffer.map_to_host() as host_buffer:
             rand(host_buffer.unsafe_ptr(), Self.size)
-            return self
+            return self.copy()
 
     fn iota(self) raises -> Self:
         with self.buffer.map_to_host() as host_buffer:
             iota(host_buffer.unsafe_ptr(), Self.size)
-            return self
+            return self.copy()

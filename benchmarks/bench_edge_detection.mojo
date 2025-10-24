@@ -1,7 +1,7 @@
 from benchmark import ThroughputMeasure, BenchId, BenchMetric, Bench, Bencher
 from operations_mojo import SobelEdgeDetection
 from .common import *
-from tensor_internal import (
+from tensor import (
     Input,
     Output,
 )

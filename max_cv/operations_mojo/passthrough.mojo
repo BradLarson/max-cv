@@ -1,6 +1,6 @@
 import compiler
 from utils.index import IndexList
-from tensor_internal import (
+from tensor import (
     ManagedTensorSlice,
     foreach,
     OutputTensor,
@@ -38,4 +38,4 @@ struct Passthrough:
     fn shape(
         x: InputTensor,
     ) raises -> IndexList[x.rank]:
-        raise "NotImplemented"
+        raise Error("NotImplemented")
