@@ -1,15 +1,15 @@
 import compiler
-from builtin.simd import _pow
-from math import sqrt
-from utils.index import IndexList
+from std.builtin.simd import _pow
+from std.math import sqrt
+from std.utils.index import IndexList
 from tensor import foreach, OutputTensor, InputTensor
-from runtime.asyncrt import DeviceContextPtr
+from std.runtime.asyncrt import DeviceContextPtr
 
 
 # FIXME: This makes a lot of assumptions about the inbound tensor.
 fn edge_clamped_offset_load[
     width: Int, _rank: Int, type: DType, height_offset: Int, width_offset: Int
-](tensor: InputTensor[dtype=type, rank=_rank], index: IndexList[_rank]) -> SIMD[
+](tensor: InputTensor[dtype=type, rank=_rank, ...], index: IndexList[_rank]) -> SIMD[
     type, width
 ]:
     var clamped_index = index
@@ -30,7 +30,7 @@ struct SobelEdgeDetection:
     ](
         output: OutputTensor,
         strength: Float32,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter

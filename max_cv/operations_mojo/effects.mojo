@@ -1,7 +1,7 @@
 import compiler
-from utils.index import Index, IndexList
+from std.utils.index import Index, IndexList
 from tensor import foreach, OutputTensor, InputTensor
-from runtime.asyncrt import DeviceContextPtr
+from std.runtime.asyncrt import DeviceContextPtr
 
 
 @compiler.register("pixellate")
@@ -14,7 +14,7 @@ struct Pixellate:
     ](
         output: OutputTensor,
         pixel_width: Int32,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter

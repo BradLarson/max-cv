@@ -1,8 +1,8 @@
 import compiler
-from builtin.simd import _pow
-from utils.index import IndexList
+from std.builtin.simd import _pow
+from std.runtime.asyncrt import DeviceContextPtr
+from std.utils.index import IndexList
 from tensor import OutputTensor, InputTensor, foreach
-from runtime.asyncrt import DeviceContextPtr
 
 
 @compiler.register("brightness")
@@ -15,7 +15,7 @@ struct Brightness:
     ](
         output: OutputTensor,
         brightness: Float32,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter
@@ -38,7 +38,7 @@ struct Gamma:
     ](
         output: OutputTensor,
         gamma: Float32,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter
@@ -60,7 +60,7 @@ struct Luminance:
         target: StaticString,
     ](
         output: OutputTensor,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         @parameter

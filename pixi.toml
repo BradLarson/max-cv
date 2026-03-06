@@ -14,40 +14,40 @@ bench = { cmd = "mojo -I max_cv/ ./benchmarks/bench.mojo"}
 test = { cmd = "pytest"}
 
 [feature.test.dependencies]
-pytest = ">=8.3.2, <9"
+pytest = ">=9.0.2,<10"
 
 [feature.notebook.tasks]
 notebook = "jupyter notebook"
 
 [feature.notebook.dependencies]
-matplotlib = ">=3.9.0,<4"
-notebook = ">=7.3.2,<8"
+matplotlib = ">=3.10.8,<4"
+notebook = ">=7.5.4,<8"
 
 [feature.showcase.tasks]
 showcase = { cmd = "python examples/showcase.py $0"}
 
 [feature.showcase.dependencies]
-click = ">=8.1.7"
-matplotlib = ">=3.9.0,<4"
+click = ">=8.3.1,<9"
+matplotlib = ">=3.10.8,<4"
 
 [feature.showcasevideo.tasks]
 showcase_video = "python examples/showcase_video.py"
 
 [feature.showcasevideo.dependencies]
-click = ">=8.1.7"
-py-opencv = ">=4.11.0,<5"
+click = ">=8.3.1,<9"
+py-opencv = ">=4.13.0,<5"
 
 [feature.format.tasks]
 format = { cmd = "ruff format", depends-on=["format_mojo"] }
 format_mojo = "mojo format max_cv/operations_mojo benchmarks -l 80"
 
 [feature.format.dependencies]
-ruff = ">=0.14.0,<0.15"
-mojo = ">=0.26.1.0.dev2025121805,<27"
+ruff = ">=0.15.5,<0.16"
+mojo = ">=0.26.2.0.dev2026030616,<0.27"
 
 [dependencies]
-pillow = ">=11.0.0,<12"
-max = ">=26.2.0.dev2026012405,<27"
+pillow = ">=12.1.1,<13"
+max = ">=26.2.0.dev2026030616,<27"
 
 [environments]
 default = { solve-group = "default" }

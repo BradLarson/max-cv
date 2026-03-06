@@ -1,7 +1,7 @@
 import compiler
-from utils.index import IndexList
+from std.utils.index import IndexList
+from std.runtime.asyncrt import DeviceContextPtr
 from tensor import OutputTensor, InputTensor, foreach
-from runtime.asyncrt import DeviceContextPtr
 
 
 fn _add[
@@ -44,10 +44,10 @@ struct Blend:
         blend_mode: StaticString,
         target: StaticString,
     ](
-        output: OutputTensor[dtype=type],
+        output: OutputTensor[dtype=type, ...],
         intensity: Float32,
-        background_image: InputTensor[dtype=type, rank = output.rank],
-        foreground_image: InputTensor[dtype=type, rank = output.rank],
+        background_image: InputTensor[dtype=type, rank = output.rank, ...],
+        foreground_image: InputTensor[dtype=type, rank = output.rank, ...],
         ctx: DeviceContextPtr,
     ) raises:
         var converted_intensity = intensity.cast[foreground_image.dtype]()
@@ -62,8 +62,7 @@ struct Blend:
             var foreground_pixel = foreground_image.load[width](idx)
             var background_pixel = background_image.load[width](idx)
 
-            @parameter
-            if blend_mode == "add":
+            comptime if blend_mode == "add":
                 return _add[float_dtype = foreground_image.dtype](
                     foreground_pixel, background_pixel, converted_intensity
                 )

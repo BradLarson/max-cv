@@ -1,8 +1,8 @@
 import compiler
-from utils.index import Index, IndexList
+from std.utils.index import Index, IndexList
 from tensor import foreach, InputTensor, OutputTensor
-from runtime.asyncrt import DeviceContextPtr
-from math import sqrt
+from std.runtime.asyncrt import DeviceContextPtr
+from std.math import sqrt
 
 
 @compiler.register("draw_circle")
@@ -12,11 +12,11 @@ struct DrawCircle:
         target: StaticString
     ](
         output: OutputTensor,
-        image: InputTensor[dtype = output.dtype, rank = output.rank],
+        image: InputTensor[dtype = output.dtype, rank = output.rank, ...],
         radius: Scalar[output.dtype],
-        color: InputTensor[dtype = output.dtype, rank=1],
+        color: InputTensor[dtype = output.dtype, rank=1, ...],
         width: Scalar[output.dtype],
-        center: InputTensor[dtype = output.dtype, rank=1],
+        center: InputTensor[dtype = output.dtype, rank=1, ...],
         ctx: DeviceContextPtr,
     ) raises:
         if color.size() != 3:
