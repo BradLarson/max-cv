@@ -1,8 +1,8 @@
 import compiler
 from std.math import pow
-from std.utils.index import IndexList
-from tensor import OutputTensor, InputTensor, foreach
-from std.runtime.asyncrt import DeviceContextPtr
+from std.utils.coord import Coord, coord_to_index_list
+from extensibility import OutputTensor, InputTensor, foreach
+from std.gpu.host import DeviceContext
 
 
 @compiler.register("brightness")
@@ -18,13 +18,11 @@ struct Brightness:
         image: InputTensor[
             dtype=output.dtype, rank=output.rank, static_spec=...
         ],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         @parameter
         @always_inline
-        def add[
-            width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
+        def add[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
             return image.load[width](idx) + brightness.cast[image.dtype]()
 
         foreach[add, target=target](output, ctx)
@@ -43,13 +41,11 @@ struct Gamma:
         image: InputTensor[
             dtype=output.dtype, rank=output.rank, static_spec=...
         ],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         @parameter
         @always_inline
-        def gamma_kernel[
-            width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
+        def gamma_kernel[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
             return pow(image.load[width](idx), gamma.cast[image.dtype]())
 
         foreach[gamma_kernel, target=target](output, ctx)
@@ -67,14 +63,12 @@ struct Luminance:
         image: InputTensor[
             dtype=output.dtype, rank=output.rank, static_spec=...
         ],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         @parameter
         @always_inline
-        def luminance[
-            width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
-            var color_idx = idx
+        def luminance[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
+            var color_idx = coord_to_index_list(idx)
             color_idx[image.rank - 1] = 0
             var red = image.load[1](color_idx)
             color_idx[image.rank - 1] = 1

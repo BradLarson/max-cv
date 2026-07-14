@@ -103,16 +103,24 @@ struct OperationName:
         output: OutputTensor,
         param: Float32,
         image: InputTensor[dtype = output.dtype, rank = output.rank],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         @parameter
         @always_inline
-        def kernel[width: Int](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
+        def kernel[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
             # Process pixels here
             return image.load[width](idx) + param
 
         foreach[kernel, target=target](output, ctx)
 ```
+
+Imports for the above: `from extensibility import InputTensor, OutputTensor,
+foreach`, `from std.gpu.host import DeviceContext`, and
+`from std.utils.coord import Coord`.
+
+Kernels receive a `Coord`. To do index arithmetic (offsets, clamping, per-channel
+loads), convert it with `coord_to_index_list(idx)` from `std.utils.coord`, mutate
+the resulting `IndexList`, and pass that to `load`.
 
 ### Operation Categories
 

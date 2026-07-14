@@ -1,12 +1,12 @@
 import compiler
-from std.utils.index import IndexList
-from tensor import (
+from std.utils.coord import Coord
+from extensibility import (
     ManagedTensorSlice,
     foreach,
     OutputTensor,
     InputTensor,
 )
-from std.runtime.asyncrt import DeviceContextPtr
+from std.gpu.host import DeviceContext
 
 
 @compiler.register("passthrough")
@@ -23,13 +23,11 @@ struct Passthrough:
             dtype=output.dtype, rank=output.rank, static_spec=...
         ],
         # the context is needed for some GPU calls
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         @parameter
         @always_inline
-        def func[
-            width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
+        def func[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
             return image.load[width](idx)
 
         foreach[func, target=target](output, ctx)

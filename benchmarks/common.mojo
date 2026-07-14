@@ -1,12 +1,12 @@
 from std.math import iota
 from std.max.driver import cpu
 from std.gpu.host import DeviceContext, DeviceBuffer
-from tensor import (
+from extensibility import (
     ManagedTensorSlice,
     StaticTensorSpec,
     get_row_major_tensor_spec_static,
+    IO,
     IOSpec,
-    Input,
 )
 from layout import IntTuple, to_index_list
 from layout.int_tuple import product
@@ -27,23 +27,25 @@ comptime color_spec = get_row_major_tensor_spec_static[dtype, 1, 3]()
 
 
 def gen_tensor[
-    iospec: IOSpec
+    mut: Bool, input: IO, //, iospec: IOSpec[mut, input]
 ](ctx: DeviceContext) raises -> BenchTensor[iospec, tspec]:
     return BenchTensor[iospec, tspec](ctx).rand()
 
 
 def gen_color_tensor(
     ctx: DeviceContext,
-) raises -> BenchTensor[Input, color_spec]:
-    return BenchTensor[Input, color_spec](ctx).rand()
+) raises -> BenchTensor[IOSpec.Input, color_spec]:
+    return BenchTensor[IOSpec.Input, color_spec](ctx).rand()
 
 
 @fieldwise_init
 struct BenchTensor[
     dtype: DType,
     rank: Int,
+    mut: Bool,
+    input: IO,
     //,
-    io_spec: IOSpec,
+    io_spec: IOSpec[mut, input],
     static_spec: StaticTensorSpec[dtype, rank, _],
 ](Copyable, Movable):
     comptime tensor_type = ManagedTensorSlice[

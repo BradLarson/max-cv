@@ -7,10 +7,7 @@ from std.benchmark import (
 )
 from operations_mojo import Blend
 from .common import *
-from tensor import (
-    Input,
-    Output,
-)
+from extensibility import IOSpec
 
 
 def run_blend_benchmarks(mut bench: Bench) raises:
@@ -19,9 +16,9 @@ def run_blend_benchmarks(mut bench: Bench) raises:
 
 def blend(mut bench: Bench) raises:
     var cpu = DeviceContext(api="cpu")
-    var background_image = gen_tensor[Input](cpu)
-    var foreground_image = gen_tensor[Input](cpu)
-    var outtensor = gen_tensor[Output](cpu)
+    var background_image = gen_tensor[IOSpec.Input](cpu)
+    var foreground_image = gen_tensor[IOSpec.Input](cpu)
+    var outtensor = gen_tensor[IOSpec.Output](cpu)
 
     var els = background_image.size
     var elements = [ThroughputMeasure(BenchMetric.elements, els)]
@@ -52,9 +49,9 @@ def blend(mut bench: Bench) raises:
 
         comptime if has_accelerator():
             var gpu = DeviceContext()
-            var gpu_background_image = gen_tensor[Input](gpu)
-            var gpu_foreground_image = gen_tensor[Input](gpu)
-            var gpu_outtensor = gen_tensor[Output](gpu)
+            var gpu_background_image = gen_tensor[IOSpec.Input](gpu)
+            var gpu_foreground_image = gen_tensor[IOSpec.Input](gpu)
+            var gpu_outtensor = gen_tensor[IOSpec.Output](gpu)
 
             @parameter
             @always_inline

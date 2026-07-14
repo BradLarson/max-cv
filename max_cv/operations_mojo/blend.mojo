@@ -1,7 +1,7 @@
 import compiler
-from std.utils.index import IndexList
-from tensor import OutputTensor, InputTensor, foreach
-from std.runtime.asyncrt import DeviceContextPtr
+from std.utils.coord import Coord
+from extensibility import OutputTensor, InputTensor, foreach
+from std.gpu.host import DeviceContext
 
 
 def _add[
@@ -52,7 +52,7 @@ struct Blend:
         foreground_image: InputTensor[
             dtype=type, rank=output.rank, static_spec=...
         ],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         var converted_intensity = intensity.cast[foreground_image.dtype]()
 
@@ -61,9 +61,7 @@ struct Blend:
         @always_inline
         def blend[
             width: Int
-        ](idx: IndexList[foreground_image.rank]) -> SIMD[
-            foreground_image.dtype, width
-        ]:
+        ](idx: Coord) -> SIMD[foreground_image.dtype, width]:
             var foreground_pixel = foreground_image.load[width](idx)
             var background_pixel = background_image.load[width](idx)
 

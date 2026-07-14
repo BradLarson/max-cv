@@ -7,10 +7,7 @@ from std.benchmark import (
 )
 from operations_mojo import Flip
 from .common import *
-from tensor import (
-    Input,
-    Output,
-)
+from extensibility import IOSpec
 
 
 comptime FLIP_VERTICAL = 0
@@ -26,8 +23,8 @@ def run_transform_benchmarks(mut bench: Bench) raises:
 
 def bench_flip[flip_code: Int, name: StringLiteral](mut bench: Bench) raises:
     var cpu = DeviceContext(api="cpu")
-    var outtensor = gen_tensor[Output](cpu)
-    var intensor = gen_tensor[Input](cpu)
+    var outtensor = gen_tensor[IOSpec.Output](cpu)
+    var intensor = gen_tensor[IOSpec.Input](cpu)
     var els = intensor.size
     var elements = [ThroughputMeasure(BenchMetric.elements, els)]
 
@@ -46,8 +43,8 @@ def bench_flip[flip_code: Int, name: StringLiteral](mut bench: Bench) raises:
 
     comptime if has_accelerator():
         var gpu = DeviceContext()
-        var gpu_outtensor = gen_tensor[Output](gpu)
-        var gpu_intensor = gen_tensor[Input](gpu)
+        var gpu_outtensor = gen_tensor[IOSpec.Output](gpu)
+        var gpu_intensor = gen_tensor[IOSpec.Input](gpu)
 
         @parameter
         def bench_gpu(mut b: Bencher) raises:

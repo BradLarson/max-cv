@@ -1,8 +1,9 @@
 import compiler
 from std.math import sqrt
 from std.utils.index import IndexList
-from tensor import foreach, OutputTensor, InputTensor
-from std.runtime.asyncrt import DeviceContextPtr
+from std.utils.coord import Coord, coord_to_index_list
+from extensibility import foreach, OutputTensor, InputTensor
+from std.gpu.host import DeviceContext
 from std.gpu import thread_idx, block_idx, block_dim, barrier
 from std.gpu.memory import AddressSpace
 from layout import Layout, LayoutTensor
@@ -14,9 +15,9 @@ def edge_clamped_offset_load[
     width: Int, _rank: Int, type: DType, height_offset: Int, width_offset: Int
 ](
     tensor: InputTensor[dtype=type, rank=_rank, static_spec=...],
-    index: IndexList[_rank],
+    index: Coord,
 ) -> SIMD[type, width]:
-    var clamped_index = index
+    var clamped_index = coord_to_index_list(index)
     clamped_index[0] = clamped_index[0] + height_offset
     clamped_index[1] = clamped_index[1] + width_offset
 
@@ -126,7 +127,7 @@ struct SobelEdgeDetection:
         image: InputTensor[
             dtype=output.dtype, rank=output.rank, static_spec=...
         ],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         comptime if target == "gpu":
             var im_shape = image.shape()
@@ -143,9 +144,8 @@ struct SobelEdgeDetection:
             comptime dtype = image_tensor.dtype
             comptime simd_width = simd_width_of[dtype]()
 
-            var gpu = ctx.get_device_context()
             comptime kernel = sobel_kernel[simd_width, dtype, image_layout]
-            gpu.enqueue_function[kernel, kernel](
+            ctx.enqueue_function[kernel](
                 output_tensor,
                 image_tensor,
                 strength,
@@ -160,9 +160,7 @@ struct SobelEdgeDetection:
 
             @parameter
             @always_inline
-            def sobel[
-                width: Int
-            ](idx: IndexList[image.rank]) -> SIMD[image.dtype, width]:
+            def sobel[width: Int](idx: Coord) -> SIMD[image.dtype, width]:
                 var top_left = edge_clamped_offset_load[
                     1, height_offset=-1, width_offset=-1
                 ](image, idx)

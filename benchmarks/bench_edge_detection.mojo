@@ -7,10 +7,7 @@ from std.benchmark import (
 )
 from operations_mojo import SobelEdgeDetection
 from .common import *
-from tensor import (
-    Input,
-    Output,
-)
+from extensibility import IOSpec
 
 
 def run_edge_detection_benchmarks(mut bench: Bench) raises:
@@ -19,8 +16,8 @@ def run_edge_detection_benchmarks(mut bench: Bench) raises:
 
 def sobel(mut bench: Bench) raises:
     var cpu = DeviceContext(api="cpu")
-    var intensor = BenchTensor[Input, tspec_lum](cpu).rand()
-    var outtensor = BenchTensor[Output, tspec_lum](cpu).rand()
+    var intensor = BenchTensor[IOSpec.Input, tspec_lum](cpu).rand()
+    var outtensor = BenchTensor[IOSpec.Output, tspec_lum](cpu).rand()
 
     var els = intensor.size
     var elements = [ThroughputMeasure(BenchMetric.elements, els)]
@@ -40,8 +37,8 @@ def sobel(mut bench: Bench) raises:
 
     comptime if has_accelerator():
         var gpu = DeviceContext()
-        var gpu_intensor = BenchTensor[Input, tspec_lum](gpu).rand()
-        var gpu_outtensor = BenchTensor[Output, tspec_lum](gpu).rand()
+        var gpu_intensor = BenchTensor[IOSpec.Input, tspec_lum](gpu).rand()
+        var gpu_outtensor = BenchTensor[IOSpec.Output, tspec_lum](gpu).rand()
 
         @parameter
         def bench_gpu(mut b: Bencher) raises:

@@ -43,11 +43,13 @@ format_mojo = "mojo format max_cv/operations_mojo benchmarks -l 80"
 
 [feature.format.dependencies]
 ruff = ">=0.14.0,<0.15"
-mojo = ">=0.26.1.0.dev2025121805,<27"
+# `mojo format` shells out to the mblack formatter, which ships separately
+# from the compiler in max-core.
+mblack = ">=26.5.0.dev2026071306,<27"
 
 [dependencies]
 pillow = ">=11.0.0,<12"
-max = ">=26.2.0.dev2026012405,<27"
+max = ">=26.5.0.dev2026071306,<27"
 
 [environments]
 default = { solve-group = "default" }

@@ -1,7 +1,8 @@
 import compiler
-from std.utils.index import Index, IndexList
-from tensor import foreach, InputTensor, OutputTensor
-from std.runtime.asyncrt import DeviceContextPtr
+from std.utils.index import IndexList
+from std.utils.coord import Coord, coord_to_index_list
+from extensibility import foreach, InputTensor, OutputTensor
+from std.gpu.host import DeviceContext
 from std.math import sqrt
 
 
@@ -19,7 +20,7 @@ struct DrawCircle:
         color: InputTensor[dtype=output.dtype, rank=1, static_spec=...],
         width: Scalar[output.dtype],
         center: InputTensor[dtype=output.dtype, rank=1, static_spec=...],
-        ctx: DeviceContextPtr,
+        ctx: DeviceContext,
     ) raises:
         if color.size() != 3:
             raise Error(
@@ -45,18 +46,17 @@ struct DrawCircle:
         )
         @parameter
         @always_inline
-        def draw[
-            simd_width: Int
-        ](idx: IndexList[image.rank]) -> SIMD[image.dtype, simd_width]:
-            var i = (Scalar[output.dtype](idx[1]) - cx) ** 2
-            var j = (Scalar[output.dtype](idx[0]) - cy) ** 2
+        def draw[simd_width: Int](idx: Coord) -> SIMD[image.dtype, simd_width]:
+            var pixel_idx = coord_to_index_list(idx)
+            var i = (Scalar[output.dtype](pixel_idx[1]) - cx) ** 2
+            var j = (Scalar[output.dtype](pixel_idx[0]) - cy) ** 2
 
             var distance = sqrt(i + j)
             var in_ring = (distance < outer_dist + 0.5) and (
                 distance > inner_dist - 0.5
             )
             if in_ring:
-                var channel = idx[image.rank - 1]
+                var channel = pixel_idx[image.rank - 1]
                 if channel == 0:
                     return r_color
                 elif channel == 1:
